@@ -1,0 +1,20 @@
+{
+  "n_steps": 500,
+  "final_price": 110.89660716333194,
+  "final_fundamental": 104.27021997269968,
+  "final_mispricing_pct": 6.355014108886696,
+  "max_abs_mispricing_pct": 16.137423837910138,
+  "mean_abs_mispricing_pct": 7.989943299597694,
+  "max_drawdown_pct": -5.605258419492227,
+  "annualised_sharpe": 0.8248301383059053,
+  "mean_rolling_vol": 0.004014752398663997,
+  "total_margin_calls": 27,
+  "total_defaults": 0,
+  "n_crash_steps": 0,
+  "n_bubble_steps": 0,
+  "mean_avg_leverage": 0.17158808607203502,
+  "max_avg_leverage": 0.3008828575190294,
+  "peak_ponzi_pct": 0.0,
+  "final_avg_wealth": 3180.4439017616864,
+  "final_gini": 0.5235276532376631
+}
