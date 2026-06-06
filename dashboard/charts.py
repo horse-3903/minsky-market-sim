@@ -121,7 +121,7 @@ def volatility_chart(df: pd.DataFrame) -> go.Figure:
 def margin_calls_chart(df: pd.DataFrame) -> go.Figure:
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
                         subplot_titles=("Margin Calls", "Defaults"),
-                        vertical_spacing=0.12)
+                        vertical_spacing=0.22)
     fig.add_trace(go.Bar(
         x=df["step"], y=df["n_margin_calls"],
         marker_color=_COLORS["margin_calls"], name="Margin calls",
@@ -131,8 +131,7 @@ def margin_calls_chart(df: pd.DataFrame) -> go.Figure:
         marker_color=_COLORS["defaults"], name="Defaults",
     ), row=2, col=1)
     fig.update_layout(
-        title="Margin Calls & Defaults per Step",
-        height=340, margin=dict(l=0, r=0, t=40, b=0),
+        height=380, margin=dict(l=0, r=0, t=30, b=0),
         showlegend=False,
     )
     return fig
@@ -159,11 +158,10 @@ def minsky_chart(df: pd.DataFrame) -> go.Figure:
         line=dict(color=_COLORS["ponzi"], width=0.5),
     ))
     fig.update_layout(
-        title="Minsky Finance-State Composition",
         xaxis_title="Step", yaxis_title="% of active agents",
         yaxis=dict(range=[0, 100]),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        height=300, margin=dict(l=0, r=0, t=40, b=0),
+        legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5),
+        height=360, margin=dict(l=0, r=0, t=10, b=60),
     )
     return fig
 

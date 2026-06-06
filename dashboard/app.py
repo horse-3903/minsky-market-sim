@@ -44,7 +44,7 @@ from charts import (
 
 st.set_page_config(
     page_title="Minsky Market Sim",
-    page_icon="📈",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -54,7 +54,7 @@ st.set_page_config(
 # ──────────────────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.title("⚙️ Simulation Controls")
+    st.title("Simulation Controls")
 
     st.subheader("General")
     n_steps = st.slider("Steps", 100, 2000, 500, step=100)
@@ -81,7 +81,7 @@ with st.sidebar:
     fund_sens = st.slider("Fundamental sensitivity", 0.05, 2.0, 0.5, step=0.05)
     mom_sens = st.slider("Momentum sensitivity", 0.05, 2.0, 0.3, step=0.05)
 
-    run_btn = st.button("▶  Run Simulation", use_container_width=True, type="primary")
+    run_btn = st.button("Run Simulation", use_container_width=True, type="primary")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Session state — persist results between reruns
@@ -135,14 +135,14 @@ if run_btn:
 # Main content
 # ──────────────────────────────────────────────────────────────────────────────
 
-st.title("📈 Minsky Market Simulation Dashboard")
+st.title("Minsky Market Simulation Dashboard")
 st.caption(
     "Agent-based model of Minsky's Financial Instability Hypothesis. "
     "Configure parameters in the sidebar and press **Run Simulation**."
 )
 
 if st.session_state.df is None:
-    st.info("Configure parameters in the sidebar and press **▶ Run Simulation** to begin.")
+    st.info("Configure parameters in the sidebar and press **Run Simulation** to begin.")
     st.stop()
 
 df: pd.DataFrame = st.session_state.df
@@ -235,8 +235,10 @@ with tab_risk:
 
     col1, col2 = st.columns(2)
     with col1:
+        st.markdown("**Minsky Finance-State Composition**")
         st.plotly_chart(minsky_chart(df), use_container_width=True)
     with col2:
+        st.markdown("**Margin Calls & Defaults per Step**")
         st.plotly_chart(margin_calls_chart(df), use_container_width=True)
 
     # Minsky state breakdown at last step
@@ -302,7 +304,7 @@ with tab_data:
     with col_dl1:
         csv_bytes = df.to_csv(index=False).encode()
         st.download_button(
-            "⬇️  Download CSV",
+            "Download CSV",
             data=csv_bytes,
             file_name="simulation_results.csv",
             mime="text/csv",
@@ -311,7 +313,7 @@ with tab_data:
     with col_dl2:
         json_str = json.dumps(stats, indent=2)
         st.download_button(
-            "⬇️  Download Summary JSON",
+            "Download Summary JSON",
             data=json_str,
             file_name="summary_stats.json",
             mime="application/json",
