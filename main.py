@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from sim_minsky_market.experiments.baseline_stability import run as run_baseline
+from experiments.baseline_stability import run as run_baseline
 
 
 def main() -> None:
