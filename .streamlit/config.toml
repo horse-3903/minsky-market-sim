@@ -8,3 +8,5 @@ font = "monospace"
 
 [server]
 headless = true
+enableCORS = false
+enableXsrfProtection = false
