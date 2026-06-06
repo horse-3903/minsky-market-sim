@@ -242,6 +242,89 @@ def gini_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
+def sweep_crashes_chart(agg: pd.DataFrame) -> go.Figure:
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=agg["momentum_fraction"] * 100,
+        y=agg["crash_steps_mean"],
+        error_y=dict(type="data", array=agg["crash_steps_std"].tolist(), visible=True),
+        marker_color=_COLORS["defaults"],
+        name="Avg crash steps",
+    ))
+    fig.update_layout(
+        title="Crash Steps vs Momentum Fraction",
+        xaxis_title="Momentum traders (%)",
+        yaxis_title="Crash steps (mean ± SD)",
+        height=320, margin=dict(l=0, r=0, t=40, b=0),
+        showlegend=False,
+    )
+    return fig
+
+
+def sweep_leverage_chart(agg: pd.DataFrame) -> go.Figure:
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=agg["momentum_fraction"] * 100,
+        y=agg["max_leverage_mean"],
+        error_y=dict(type="data", array=agg["max_leverage_std"].tolist(), visible=True),
+        mode="lines+markers",
+        line=dict(color=_COLORS["leverage_avg"], width=2),
+        marker=dict(size=8),
+        name="Max avg leverage",
+    ))
+    fig.update_layout(
+        title="Peak Leverage vs Momentum Fraction",
+        xaxis_title="Momentum traders (%)",
+        yaxis_title="Max avg leverage (×)",
+        height=320, margin=dict(l=0, r=0, t=40, b=0),
+        showlegend=False,
+    )
+    return fig
+
+
+def sweep_drawdown_chart(agg: pd.DataFrame) -> go.Figure:
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=agg["momentum_fraction"] * 100,
+        y=agg["max_drawdown_mean"].abs(),
+        error_y=dict(type="data", array=agg["max_drawdown_std"].tolist(), visible=True),
+        mode="lines+markers",
+        fill="tozeroy",
+        fillcolor="rgba(220,38,38,0.15)",
+        line=dict(color="#dc2626", width=2),
+        marker=dict(size=8),
+        name="Max drawdown",
+    ))
+    fig.update_layout(
+        title="Max Drawdown vs Momentum Fraction",
+        xaxis_title="Momentum traders (%)",
+        yaxis_title="Max drawdown (%)",
+        height=320, margin=dict(l=0, r=0, t=40, b=0),
+        showlegend=False,
+    )
+    return fig
+
+
+def sweep_gini_chart(agg: pd.DataFrame) -> go.Figure:
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=agg["momentum_fraction"] * 100,
+        y=agg["gini_mean"],
+        mode="lines+markers",
+        line=dict(color="#a855f7", width=2),
+        marker=dict(size=8),
+        name="Final Gini",
+    ))
+    fig.update_layout(
+        title="Wealth Inequality (Gini) vs Momentum Fraction",
+        xaxis_title="Momentum traders (%)",
+        yaxis_title="Final Gini coefficient",
+        height=320, margin=dict(l=0, r=0, t=40, b=0),
+        showlegend=False,
+    )
+    return fig
+
+
 def overview_sparklines(df: pd.DataFrame) -> go.Figure:
     """2×2 mini dashboard for the Overview tab."""
     fig = make_subplots(

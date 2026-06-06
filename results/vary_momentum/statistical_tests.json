@@ -1,0 +1,100 @@
+{
+  "n_crash_steps": {
+    "kruskal_wallis": {
+      "H": 83.88428399686036,
+      "p": 8.053338441875308e-15,
+      "significant": true
+    },
+    "spearman": {
+      "rho": 0.8938173671229943,
+      "p": 2.1146546682184862e-32,
+      "significant": true
+    }
+  },
+  "max_avg_leverage": {
+    "kruskal_wallis": {
+      "H": 85.92820512820515,
+      "p": 3.1099577048383803e-15,
+      "significant": true
+    },
+    "spearman": {
+      "rho": 0.9766422732607971,
+      "p": 1.4800516769744687e-60,
+      "significant": true
+    }
+  },
+  "peak_ponzi_pct": {
+    "kruskal_wallis": {
+      "H": 0.0,
+      "p": 1.0,
+      "significant": false,
+      "note": "all_identical"
+    },
+    "spearman": {
+      "rho": 0.0,
+      "p": 1.0,
+      "significant": false,
+      "note": "constant"
+    }
+  },
+  "max_drawdown_pct": {
+    "kruskal_wallis": {
+      "H": 69.54461538461538,
+      "p": 6.054860708665163e-12,
+      "significant": true
+    },
+    "spearman": {
+      "rho": -0.8325312186921244,
+      "p": 2.712086151619739e-24,
+      "significant": true
+    }
+  },
+  "total_margin_calls": {
+    "kruskal_wallis": {
+      "H": 63.38759670741164,
+      "p": 1.0047202364203916e-10,
+      "significant": true
+    },
+    "spearman": {
+      "rho": -0.8296343607927241,
+      "p": 5.398298874616413e-24,
+      "significant": true
+    }
+  },
+  "total_defaults": {
+    "kruskal_wallis": {
+      "H": 86.02988724230586,
+      "p": 2.966051691883902e-15,
+      "significant": true
+    },
+    "spearman": {
+      "rho": 0.7971931715496312,
+      "p": 5.4698854754796374e-21,
+      "significant": true
+    }
+  },
+  "final_gini": {
+    "kruskal_wallis": {
+      "H": 72.83142485468228,
+      "p": 1.339103267356719e-12,
+      "significant": true
+    },
+    "spearman": {
+      "rho": -0.8601238569122691,
+      "p": 1.8398619505433213e-27,
+      "significant": true
+    }
+  },
+  "annualised_sharpe": {
+    "kruskal_wallis": {
+      "H": 66.54827838827839,
+      "p": 2.3828822616168336e-11,
+      "significant": true
+    },
+    "spearman": {
+      "rho": 0.6122235145813951,
+      "p": 1.439252128042875e-10,
+      "significant": true
+    }
+  }
+}

@@ -34,6 +34,10 @@ from charts import (
     overview_sparklines,
     price_chart,
     returns_histogram,
+    sweep_crashes_chart,
+    sweep_drawdown_chart,
+    sweep_gini_chart,
+    sweep_leverage_chart,
     volatility_chart,
     wealth_chart,
 )
@@ -167,8 +171,8 @@ st.divider()
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 
-tab_overview, tab_market, tab_risk, tab_agents, tab_data = st.tabs(
-    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Raw Data"]
+tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data = st.tabs(
+    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data"]
 )
 
 # ── Overview ─────────────────────────────────────────────────────────────────
@@ -278,6 +282,74 @@ with tab_agents:
             st.dataframe(w_df, use_container_width=True, hide_index=True)
         else:
             st.info("No agent type wealth data available.")
+
+# ── Experiments ──────────────────────────────────────────────────────────────
+
+SWEEP_AGG = ROOT / "results" / "vary_momentum" / "aggregated.csv"
+SWEEP_RAW = ROOT / "results" / "vary_momentum" / "raw_results.csv"
+SWEEP_STATS = ROOT / "results" / "vary_momentum" / "statistical_tests.json"
+
+with tab_experiments:
+    st.subheader("Experiment 2: Momentum Trader Share Sweep")
+    st.caption(
+        "Varies the fraction of momentum traders from 0% to 80% (40 total agents, "
+        "10 seeds per condition). Tests whether increasing momentum-trader dominance "
+        "endogenously generates the leverage buildup and crashes described by Minsky."
+    )
+
+    if not SWEEP_AGG.exists():
+        st.warning(
+            "Sweep results not found. Run the experiment first:\n\n"
+            "```\npython -m experiments.vary_momentum_share\n```"
+        )
+    else:
+        agg = pd.read_csv(SWEEP_AGG)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.plotly_chart(sweep_crashes_chart(agg), use_container_width=True)
+        with col2:
+            st.plotly_chart(sweep_leverage_chart(agg), use_container_width=True)
+
+        col3, col4 = st.columns(2)
+        with col3:
+            st.plotly_chart(sweep_drawdown_chart(agg), use_container_width=True)
+        with col4:
+            st.plotly_chart(sweep_gini_chart(agg), use_container_width=True)
+
+        # Statistical test summary
+        if SWEEP_STATS.exists():
+            import json as _json
+            with open(SWEEP_STATS) as _f:
+                stat_report = _json.load(_f)
+
+            st.subheader("Spearman Correlations with Momentum Fraction")
+            stat_rows = []
+            for metric, res in stat_report.items():
+                sp = res["spearman"]
+                kw = res["kruskal_wallis"]
+                stat_rows.append({
+                    "Metric": metric,
+                    "Spearman rho": f"{sp['rho']:+.3f}",
+                    "p-value": f"{sp['p']:.4f}",
+                    "Significant": "Yes" if sp["significant"] else "No",
+                    "Kruskal-Wallis p": f"{kw['p']:.4f}",
+                })
+            st.dataframe(
+                pd.DataFrame(stat_rows),
+                use_container_width=True,
+                hide_index=True,
+            )
+
+        # Raw results download
+        raw = pd.read_csv(SWEEP_RAW)
+        st.download_button(
+            "Download raw sweep results (CSV)",
+            data=raw.to_csv(index=False).encode(),
+            file_name="sweep_vary_momentum.csv",
+            mime="text/csv",
+        )
+
 
 # ── Raw Data ─────────────────────────────────────────────────────────────────
 

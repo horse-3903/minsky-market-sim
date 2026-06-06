@@ -26,7 +26,9 @@ class PriceMechanism:
         """Update price given net demand. Returns new price."""
         impact = self.config.price_impact * net_demand / max(self.config.liquidity, 1e-8)
         noise = self.rng.normal(0.0, self.config.noise_volatility)
-        self.price = self.price * np.exp(impact + noise)
+        # Clip exponent to prevent overflow; ±1.5 caps single-step move at ~4.5×/0.22×
+        exponent = float(np.clip(impact + noise, -1.5, 1.5))
+        self.price = self.price * np.exp(exponent)
         self.price = max(self.price, 1e-4)
         self._history.append(self.price)
         return self.price
