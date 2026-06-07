@@ -60,7 +60,7 @@ st.set_page_config(
 PRESETS = {
     "stable_baseline": {
         "label": "Stable Baseline",
-        "description": "Fundamental traders dominate. Price tracks fair value, no crashes, low volatility.",
+        "description": "Fundamental traders dominate. No crashes, low volatility.",
         "params": dict(
             n_steps=500, seed=42,
             n_fundamental=25, n_momentum=5, n_noise=10,
@@ -71,7 +71,7 @@ PRESETS = {
     },
     "minsky_moment": {
         "label": "Minsky Moment",
-        "description": "Near the critical threshold. Leverage builds steadily; crashes emerge occasionally.",
+        "description": "Near the critical threshold. Crashes emerge occasionally.",
         "params": dict(
             n_steps=500, seed=7,
             n_fundamental=14, n_momentum=18, n_noise=8,
@@ -82,7 +82,7 @@ PRESETS = {
     },
     "full_collapse": {
         "label": "Full Collapse",
-        "description": "Momentum traders overwhelm stabilisers. Rapid leverage buildup leads to total market collapse.",
+        "description": "Momentum traders overwhelm stabilisers. Total market collapse.",
         "params": dict(
             n_steps=500, seed=42,
             n_fundamental=6, n_momentum=28, n_noise=6,
@@ -93,7 +93,7 @@ PRESETS = {
     },
     "high_leverage": {
         "label": "High Leverage / Fragile",
-        "description": "High leverage limit with aggressive borrowing. Small shocks cascade into margin call chains.",
+        "description": "High leverage with aggressive borrowing. Small shocks cascade into margin calls.",
         "params": dict(
             n_steps=500, seed=42,
             n_fundamental=15, n_momentum=15, n_noise=10,
@@ -251,7 +251,7 @@ if _no_sim:
                 with col:
                     st.markdown(f"**{preset['label']}**")
                     st.markdown(
-                        f"<div style='height:130px;font-size:0.8rem;color:gray'>{preset['description']}</div>",
+                        f"<div style='height:70px;font-size:0.8rem;color:gray'>{preset['description']}</div>",
                         unsafe_allow_html=True,
                     )
                     st.button(
