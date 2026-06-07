@@ -209,7 +209,7 @@ st.caption(
 )
 
 if st.session_state.df is None:
-    st.info("Configure parameters in the sidebar and press **Run Simulation** to begin.")
+    st.subheader("Configure parameters in the sidebar and press Run Simulation to begin.")
 
     st.subheader("Or try a preset")
     p_cols = st.columns(4)
