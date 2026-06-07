@@ -218,6 +218,8 @@ st.markdown("""
     border: 1px solid #1e3a5f;
     color: #60a5fa;
     font-weight: 600;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 .stTabs [data-baseweb="tab-list"] button:nth-child(7):hover {
     background-color: #0f2040;
