@@ -213,10 +213,10 @@ st.caption(
 st.markdown("""
 <style>
 .stTabs [data-baseweb="tab-list"] button:nth-child(7) {
-    background-color: #0a1628;
+    background-color: rgba(37, 99, 235, 0.15);
     border-radius: 6px;
     border: none;
-    color: #60a5fa;
+    color: #2563eb;
     font-weight: 600;
     padding-left: 24px;
     padding-right: 24px;
@@ -224,12 +224,11 @@ st.markdown("""
     padding-bottom: 4px;
 }
 .stTabs [data-baseweb="tab-list"] button:nth-child(7):hover {
-    background-color: #0f2040;
-    border-color: #2d5a9e;
-    color: #93c5fd;
+    background-color: rgba(37, 99, 235, 0.28);
+    color: #3b82f6;
 }
 .stTabs [data-baseweb="tab-list"] button:nth-child(7) p {
-    color: #60a5fa;
+    color: #2563eb;
     font-weight: 600;
 }
 </style>
