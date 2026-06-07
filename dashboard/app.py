@@ -208,55 +208,54 @@ st.caption(
     "Configure parameters in the sidebar and press **Run Simulation**."
 )
 
-if st.session_state.df is None:
-    st.subheader("Configure parameters in the sidebar and press Run Simulation to begin.")
-
-    st.subheader("Or try a preset")
-    p_cols = st.columns(4)
-    preset_keys = list(PRESETS.keys())
-    for col, key in zip(p_cols, preset_keys):
-        preset = PRESETS[key]
-        with col:
-            st.markdown(f"**{preset['label']}**")
-            st.caption(preset["description"])
-            st.button(
-                f"Load & Run",
-                key=f"preset_btn_{key}",
-                on_click=_apply_preset,
-                args=(key,),
-                use_container_width=True,
-            )
-    st.stop()
-
-df: pd.DataFrame = st.session_state.df
-stats: dict = st.session_state.stats
-
-# ── KPI metrics row ──────────────────────────────────────────────────────────
-
-st.subheader("Key Metrics")
-
-c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
-c1.metric("Final Price", f"{stats['final_price']:.2f}",
-          delta=f"{stats['final_mispricing_pct']:.1f}% vs F",
-          delta_color="inverse")
-c2.metric("Max Mispricing", f"{stats['max_abs_mispricing_pct']:.1f}%")
-c3.metric("Max Drawdown", f"{stats['max_drawdown_pct']:.1f}%", delta_color="off")
-c4.metric("Sharpe (ann.)", f"{stats['annualised_sharpe']:.2f}")
-c5.metric("Margin Calls", f"{stats['total_margin_calls']:,}")
-c6.metric("Defaults", f"{stats['total_defaults']:,}")
-c7.metric("Peak Ponzi %", f"{stats['peak_ponzi_pct']:.1f}%")
-
-st.divider()
-
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 
 tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data, tab_guide = st.tabs(
     ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data", "Guide"]
 )
 
+_no_sim = st.session_state.df is None
+
+if _no_sim:
+    for _t in (tab_overview, tab_market, tab_risk, tab_agents, tab_data):
+        with _t:
+            st.subheader("Configure parameters in the sidebar and press Run Simulation to begin.")
+            st.subheader("Or try a preset")
+            p_cols = st.columns(4)
+            for col, key in zip(p_cols, list(PRESETS.keys())):
+                preset = PRESETS[key]
+                with col:
+                    st.markdown(f"**{preset['label']}**")
+                    st.caption(preset["description"])
+                    st.button(
+                        "Load & Run",
+                        key=f"preset_btn_{key}_{_t}",
+                        on_click=_apply_preset,
+                        args=(key,),
+                        use_container_width=True,
+                    )
+
+df: pd.DataFrame = st.session_state.df
+stats: dict = st.session_state.stats if st.session_state.stats else {}
+
+if not _no_sim:
+    st.subheader("Key Metrics")
+    c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
+    c1.metric("Final Price", f"{stats['final_price']:.2f}",
+              delta=f"{stats['final_mispricing_pct']:.1f}% vs F",
+              delta_color="inverse")
+    c2.metric("Max Mispricing", f"{stats['max_abs_mispricing_pct']:.1f}%")
+    c3.metric("Max Drawdown", f"{stats['max_drawdown_pct']:.1f}%", delta_color="off")
+    c4.metric("Sharpe (ann.)", f"{stats['annualised_sharpe']:.2f}")
+    c5.metric("Margin Calls", f"{stats['total_margin_calls']:,}")
+    c6.metric("Defaults", f"{stats['total_defaults']:,}")
+    c7.metric("Peak Ponzi %", f"{stats['peak_ponzi_pct']:.1f}%")
+    st.divider()
+
 # ── Overview ─────────────────────────────────────────────────────────────────
 
 with tab_overview:
+  if not _no_sim:
     st.plotly_chart(overview_sparklines(df), use_container_width=True)
 
     col_l, col_r = st.columns(2)
@@ -297,6 +296,7 @@ with tab_overview:
 # ── Market ────────────────────────────────────────────────────────────────────
 
 with tab_market:
+  if not _no_sim:
     st.plotly_chart(price_chart(df), use_container_width=True)
 
     col1, col2 = st.columns(2)
@@ -314,6 +314,7 @@ with tab_market:
 # ── Leverage & Risk ───────────────────────────────────────────────────────────
 
 with tab_risk:
+  if not _no_sim:
     st.plotly_chart(leverage_chart(df), use_container_width=True)
 
     col1, col2 = st.columns(2)
@@ -324,7 +325,6 @@ with tab_risk:
         st.markdown("**Margin Calls & Defaults per Step**")
         st.plotly_chart(margin_calls_chart(df), use_container_width=True)
 
-    # Minsky state breakdown at last step
     st.subheader("Finance-State Snapshot (final step)")
     last = df.iloc[-1]
     m1, m2, m3 = st.columns(3)
@@ -337,13 +337,13 @@ with tab_risk:
 # ── Agent Performance ─────────────────────────────────────────────────────────
 
 with tab_agents:
+  if not _no_sim:
     st.plotly_chart(wealth_chart(df), use_container_width=True)
 
     col1, col2 = st.columns(2)
     with col1:
         st.plotly_chart(gini_chart(df), use_container_width=True)
     with col2:
-        # Final wealth by type
         st.subheader("Final Average Wealth by Type")
         last = df.iloc[-1]
         wealth_rows = {
@@ -433,6 +433,7 @@ with tab_experiments:
 # ── Raw Data ─────────────────────────────────────────────────────────────────
 
 with tab_data:
+  if not _no_sim:
     st.subheader("Time-Series Data")
 
     # Column selector
