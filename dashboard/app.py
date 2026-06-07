@@ -212,20 +212,26 @@ st.caption(
 
 st.markdown("""
 <style>
-div[data-testid="stTabs"] button:last-child {
-    background-color: #1e3a5f;
-    border-radius: 6px;
-    font-weight: 600;
+button[data-baseweb="tab"]:last-child {
+    background-color: #1e3a5f !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
     color: #93c5fd !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
 }
-div[data-testid="stTabs"] button:last-child:hover {
-    background-color: #1e40af;
+button[data-baseweb="tab"]:last-child:hover {
+    background-color: #1e40af !important;
+}
+button[data-baseweb="tab"]:last-child p {
+    color: #93c5fd !important;
+    font-weight: 700 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data, tab_guide = st.tabs(
-    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data", "[ Guide ]"]
+    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data", "Guide"]
 )
 
 _no_sim = st.session_state.df is None
