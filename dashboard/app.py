@@ -54,6 +54,65 @@ st.set_page_config(
 )
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Presets
+# ──────────────────────────────────────────────────────────────────────────────
+
+PRESETS = {
+    "stable_baseline": {
+        "label": "Stable Baseline",
+        "description": "Fundamental traders dominate. Price tracks fair value, no crashes, low volatility.",
+        "params": dict(
+            n_steps=500, seed=42,
+            n_fundamental=25, n_momentum=5, n_noise=10,
+            price_impact=0.008, liquidity=1.0, noise_vol=0.003, fund_vol=0.003,
+            max_leverage=2.0, borrowing_rate=0.0003,
+            initial_cash=1000, fund_sens=0.5, mom_sens=0.3,
+        ),
+    },
+    "minsky_moment": {
+        "label": "Minsky Moment",
+        "description": "Near the critical threshold. Leverage builds steadily; crashes emerge occasionally.",
+        "params": dict(
+            n_steps=500, seed=7,
+            n_fundamental=14, n_momentum=18, n_noise=8,
+            price_impact=0.015, liquidity=1.0, noise_vol=0.009, fund_vol=0.005,
+            max_leverage=3.0, borrowing_rate=0.0003,
+            initial_cash=1000, fund_sens=0.5, mom_sens=2.0,
+        ),
+    },
+    "full_collapse": {
+        "label": "Full Collapse",
+        "description": "Momentum traders overwhelm stabilisers. Rapid leverage buildup leads to total market collapse.",
+        "params": dict(
+            n_steps=500, seed=42,
+            n_fundamental=6, n_momentum=28, n_noise=6,
+            price_impact=0.015, liquidity=1.0, noise_vol=0.009, fund_vol=0.005,
+            max_leverage=3.0, borrowing_rate=0.0003,
+            initial_cash=1000, fund_sens=0.5, mom_sens=2.0,
+        ),
+    },
+    "high_leverage": {
+        "label": "High Leverage / Fragile",
+        "description": "High leverage limit with aggressive borrowing. Small shocks cascade into margin call chains.",
+        "params": dict(
+            n_steps=500, seed=42,
+            n_fundamental=15, n_momentum=15, n_noise=10,
+            price_impact=0.015, liquidity=0.7, noise_vol=0.008, fund_vol=0.005,
+            max_leverage=6.0, borrowing_rate=0.001,
+            initial_cash=1000, fund_sens=0.5, mom_sens=1.5,
+        ),
+    },
+}
+
+_DEFAULTS = PRESETS["stable_baseline"]["params"]
+
+def _apply_preset(key: str) -> None:
+    p = PRESETS[key]["params"]
+    for k, v in p.items():
+        st.session_state[k] = v
+    st.session_state["_run_preset"] = True
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Sidebar — simulation controls
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -61,29 +120,29 @@ with st.sidebar:
     st.title("Simulation Controls")
 
     st.subheader("General")
-    n_steps = st.slider("Steps", 100, 2000, 500, step=100)
-    seed = st.number_input("Random seed", min_value=0, max_value=9999, value=42, step=1)
+    n_steps = st.slider("Steps", 100, 2000, _DEFAULTS["n_steps"], step=100, key="n_steps")
+    seed = st.number_input("Random seed", min_value=0, max_value=9999, value=_DEFAULTS["seed"], step=1, key="seed")
 
     st.subheader("Agent Counts")
-    n_fundamental = st.slider("Fundamental traders", 0, 50, 20)
-    n_momentum = st.slider("Momentum traders", 0, 50, 10)
-    n_noise = st.slider("Noise traders", 0, 50, 10)
+    n_fundamental = st.slider("Fundamental traders", 0, 50, _DEFAULTS["n_fundamental"], key="n_fundamental")
+    n_momentum = st.slider("Momentum traders", 0, 50, _DEFAULTS["n_momentum"], key="n_momentum")
+    n_noise = st.slider("Noise traders", 0, 50, _DEFAULTS["n_noise"], key="n_noise")
 
     st.subheader("Market Parameters")
-    price_impact = st.slider("Price impact (α)", 0.001, 0.05, 0.01, step=0.001, format="%.3f")
-    liquidity = st.slider("Liquidity", 0.2, 3.0, 1.0, step=0.1)
-    noise_vol = st.slider("Price noise σ", 0.0, 0.02, 0.002, step=0.001, format="%.3f")
-    fund_vol = st.slider("Fundamental σ", 0.0, 0.02, 0.003, step=0.001, format="%.3f")
+    price_impact = st.slider("Price impact (α)", 0.001, 0.05, _DEFAULTS["price_impact"], step=0.001, format="%.3f", key="price_impact")
+    liquidity = st.slider("Liquidity", 0.2, 3.0, _DEFAULTS["liquidity"], step=0.1, key="liquidity")
+    noise_vol = st.slider("Price noise σ", 0.0, 0.02, _DEFAULTS["noise_vol"], step=0.001, format="%.3f", key="noise_vol")
+    fund_vol = st.slider("Fundamental σ", 0.0, 0.02, _DEFAULTS["fund_vol"], step=0.001, format="%.3f", key="fund_vol")
 
     st.subheader("Leverage & Margin")
-    max_leverage = st.slider("Max leverage (L_max)", 1.0, 10.0, 3.0, step=0.5)
-    borrowing_rate = st.slider("Borrowing rate (per step)", 0.0, 0.005, 0.0003,
-                               step=0.0001, format="%.4f")
+    max_leverage = st.slider("Max leverage (L_max)", 1.0, 10.0, _DEFAULTS["max_leverage"], step=0.5, key="max_leverage")
+    borrowing_rate = st.slider("Borrowing rate (per step)", 0.0, 0.005, _DEFAULTS["borrowing_rate"],
+                               step=0.0001, format="%.4f", key="borrowing_rate")
 
     st.subheader("Agent Parameters")
-    initial_cash = st.slider("Initial cash per agent", 100, 5000, 1000, step=100)
-    fund_sens = st.slider("Fundamental sensitivity", 0.05, 2.0, 0.5, step=0.05)
-    mom_sens = st.slider("Momentum sensitivity", 0.05, 2.0, 0.3, step=0.05)
+    initial_cash = st.slider("Initial cash per agent", 100, 5000, _DEFAULTS["initial_cash"], step=100, key="initial_cash")
+    fund_sens = st.slider("Fundamental sensitivity", 0.05, 2.0, _DEFAULTS["fund_sens"], step=0.05, key="fund_sens")
+    mom_sens = st.slider("Momentum sensitivity", 0.05, 2.0, _DEFAULTS["mom_sens"], step=0.05, key="mom_sens")
 
     run_btn = st.button("Run Simulation", use_container_width=True, type="primary")
 
@@ -95,8 +154,12 @@ if "df" not in st.session_state:
     st.session_state.df = None
 if "stats" not in st.session_state:
     st.session_state.stats = None
+if "_run_preset" not in st.session_state:
+    st.session_state["_run_preset"] = False
 
-if run_btn:
+should_run = run_btn or st.session_state.pop("_run_preset", False)
+
+if should_run:
     config = SimulationConfig(
         n_steps=n_steps,
         seed=int(seed),
@@ -147,6 +210,22 @@ st.caption(
 
 if st.session_state.df is None:
     st.info("Configure parameters in the sidebar and press **Run Simulation** to begin.")
+
+    st.subheader("Or try a preset")
+    p_cols = st.columns(4)
+    preset_keys = list(PRESETS.keys())
+    for col, key in zip(p_cols, preset_keys):
+        preset = PRESETS[key]
+        with col:
+            st.markdown(f"**{preset['label']}**")
+            st.caption(preset["description"])
+            st.button(
+                f"Load & Run",
+                key=f"preset_btn_{key}",
+                on_click=_apply_preset,
+                args=(key,),
+                use_container_width=True,
+            )
     st.stop()
 
 df: pd.DataFrame = st.session_state.df
