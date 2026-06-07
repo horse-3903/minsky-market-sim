@@ -210,6 +210,25 @@ st.caption(
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 
+st.markdown("""
+<style>
+.stTabs [data-baseweb="tab-list"] button:nth-child(7) {
+    background-color: #1e3a5f;
+    border-radius: 6px;
+    color: #93c5fd;
+    font-weight: 700;
+}
+.stTabs [data-baseweb="tab-list"] button:nth-child(7):hover {
+    background-color: #1e40af;
+    color: #bfdbfe;
+}
+.stTabs [data-baseweb="tab-list"] button:nth-child(7) p {
+    color: #93c5fd;
+    font-weight: 700;
+}
+</style>
+""", unsafe_allow_html=True)
+
 tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data, tab_guide = st.tabs(
     ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data", "Guide"]
 )
