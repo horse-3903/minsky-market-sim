@@ -230,7 +230,7 @@ if _no_sim:
                 with col:
                     st.markdown(f"**{preset['label']}**")
                     st.markdown(
-                        f"<div style='min-height:60px;font-size:0.8rem;color:gray'>{preset['description']}</div>",
+                        f"<div style='height:130px;font-size:0.8rem;color:gray'>{preset['description']}</div>",
                         unsafe_allow_html=True,
                     )
                     st.button(
