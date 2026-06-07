@@ -221,9 +221,7 @@ if _no_sim:
         with _t:
             st.subheader("Configure parameters in the sidebar and press Run Simulation to begin.")
             st.markdown(
-                "New here? The **Guide** tab (far right) explains every parameter and what each chart measures. "
-                "Or jump straight in with one of the presets below — each one is calibrated to demonstrate "
-                "a different market regime."
+                "New here? The **Guide** tab (far right) explains every parameter and what each chart measures."
             )
             st.subheader("Or try a preset")
             p_cols = st.columns(4)
