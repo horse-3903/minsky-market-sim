@@ -153,7 +153,9 @@ The interaction between stabilising and destabilising agents determines whether 
 
 The **fundamental value** $F_t$ represents the true intrinsic worth of the asset, evolving independently of market prices. It follows a discrete-time geometric Brownian motion:
 
-$$F_{t+1} = F_t \left(1 + \mu_F + \varepsilon_t\right), \quad \varepsilon_t \sim \mathcal{N}(0, \sigma_F^2)$$
+$$
+F_{t+1} = F_t \left(1 + \mu_F + \varepsilon_t\right), \quad \varepsilon_t \sim \mathcal{N}(0, \sigma_F^2)
+$$
 
 where:
 
@@ -167,7 +169,9 @@ This is the log-normal process familiar from the Black-Scholes model. The key de
 
 In continuous time, the equivalent process is:
 
-$$dF = \mu_F F \, dt + \sigma_F F \, dW_t$$
+$$
+dF = \mu_F F \, dt + \sigma_F F \, dW_t
+$$
 
 where $W_t$ is a standard Wiener process.
 
@@ -179,15 +183,21 @@ where $W_t$ is a standard Wiener process.
 
 At each time step, agents submit buy and sell orders. Aggregating across all $N$ active agents:
 
-$$D_t^+ = \sum_{i=1}^{N} b_{i,t}, \qquad D_t^- = \sum_{i=1}^{N} s_{i,t}$$
+$$
+D_t^+ = \sum_{i=1}^{N} b_{i,t}, \qquad D_t^- = \sum_{i=1}^{N} s_{i,t}
+$$
 
-$$D_t = D_t^+ - D_t^-$$
+$$
+D_t = D_t^+ - D_t^-
+$$
 
 where $b_{i,t} \geq 0$ is agent $i$'s buy quantity and $s_{i,t} \geq 0$ is their sell quantity at step $t$.
 
 To prevent price explosions when many agents submit large simultaneous orders, demand is normalised by the number of active agents:
 
-$$\tilde{D}_t = \frac{D_t}{N_{\text{active}}}$$
+$$
+\tilde{D}_t = \frac{D_t}{N_{\text{active}}}
+$$
 
 This is equivalent to measuring price impact in terms of the **average per-agent order**, rather than total market demand.
 
@@ -195,7 +205,9 @@ This is equivalent to measuring price impact in terms of the **average per-agent
 
 The price updates via a log-linear impact function:
 
-$$P_{t+1} = P_t \cdot \exp\!\left(\frac{\alpha \tilde{D}_t}{\lambda} + \eta_t\right), \quad \eta_t \sim \mathcal{N}(0, \sigma_\eta^2)$$
+$$
+P_{t+1} = P_t \cdot \exp\!\left(\frac{\alpha \tilde{D}_t}{\lambda} + \eta_t\right), \quad \eta_t \sim \mathcal{N}(0, \sigma_\eta^2)
+$$
 
 where:
 
@@ -207,7 +219,9 @@ where:
 
 The effective price impact per unit of normalised demand is:
 
-$$\text{impact} = \frac{\alpha}{\lambda}$$
+$$
+\text{impact} = \frac{\alpha}{\lambda}
+$$
 
 Lower liquidity ($\lambda \to 0$) produces larger price swings for the same demand imbalance — a key feature for modelling crisis dynamics where liquidity evaporates.
 
@@ -215,7 +229,9 @@ Lower liquidity ($\lambda \to 0$) produces larger price swings for the same dema
 
 When margin calls fire in step $t$, the resulting forced sell volume $\Phi_t$ is **buffered** and injected as additional sell demand in step $t+1$:
 
-$$D_{t+1} \leftarrow D_{t+1} - \Phi_t$$
+$$
+D_{t+1} \leftarrow D_{t+1} - \Phi_t
+$$
 
 This one-step delay is intentional. It:
 
@@ -240,15 +256,21 @@ Each agent $i$ holds a complete balance sheet at every time step $t$:
 
 **Asset exposure** — the gross value of the risky asset position:
 
-$$E_{i,t} = P_t \cdot q_{i,t}$$
+$$
+E_{i,t} = P_t \cdot q_{i,t}
+$$
 
 **Wealth (equity)** — the net asset value, or what the agent would have after paying all debts:
 
-$$W_{i,t} = c_{i,t} + P_t q_{i,t} - d_{i,t}$$
+$$
+W_{i,t} = c_{i,t} + P_t q_{i,t} - d_{i,t}
+$$
 
 **Leverage** — the ratio of gross asset exposure to equity:
 
-$$L_{i,t} = \frac{|E_{i,t}|}{\max(W_{i,t},\, \varepsilon)}$$
+$$
+L_{i,t} = \frac{|E_{i,t}|}{\max(W_{i,t},\, \varepsilon)}
+$$
 
 where $\varepsilon > 0$ is a small floor that prevents division by zero. Note that $L = 1$ means the agent is fully invested with no borrowing; $L = 2$ means the agent has borrowed an amount equal to their equity; $L = 0$ means the agent holds only cash.
 
@@ -256,27 +278,41 @@ where $\varepsilon > 0$ is a small floor that prevents division by zero. Note th
 
 **Buying** $\Delta q > 0$ shares at price $P_t$:
 
-$$\text{cost} = \Delta q \cdot P_t$$
+$$
+\text{cost} = \Delta q \cdot P_t
+$$
 
 If $\text{cost} \leq c_{i,t}$: deduct from cash.
 
-$$c_{i,t+1} = c_{i,t} - \text{cost}, \quad d_{i,t+1} = d_{i,t}$$
+$$
+c_{i,t+1} = c_{i,t} - \text{cost}, \quad d_{i,t+1} = d_{i,t}
+$$
 
 If $\text{cost} > c_{i,t}$: use all cash, borrow the shortfall.
 
-$$c_{i,t+1} = 0, \quad d_{i,t+1} = d_{i,t} + (\text{cost} - c_{i,t})$$
+$$
+c_{i,t+1} = 0, \quad d_{i,t+1} = d_{i,t} + (\text{cost} - c_{i,t})
+$$
 
 In both cases: $q_{i,t+1} = q_{i,t} + \Delta q$
 
 **Selling** $\Delta q > 0$ shares: proceeds first repay debt.
 
-$$\text{proceeds} = \Delta q \cdot P_t$$
+$$
+\text{proceeds} = \Delta q \cdot P_t
+$$
 
-$$\text{repay} = \min(d_{i,t},\, \text{proceeds})$$
+$$
+\text{repay} = \min(d_{i,t},\, \text{proceeds})
+$$
 
-$$d_{i,t+1} = d_{i,t} - \text{repay}, \quad c_{i,t+1} = c_{i,t} + (\text{proceeds} - \text{repay})$$
+$$
+d_{i,t+1} = d_{i,t} - \text{repay}, \quad c_{i,t+1} = c_{i,t} + (\text{proceeds} - \text{repay})
+$$
 
-$$q_{i,t+1} = q_{i,t} - \Delta q$$
+$$
+q_{i,t+1} = q_{i,t} - \Delta q
+$$
 
 Note that selling shares does not increase wealth directly — proceeds go to debt repayment first. This is a key constraint: when prices fall, leveraged agents cannot easily restore their balance sheet by selling, because the proceeds are absorbed by debt.
 
@@ -288,11 +324,15 @@ Note that selling shares does not increase wealth directly — proceeds go to de
 
 At the start of each time step, before any orders are placed, debt compounds at the per-step borrowing rate $r_b$:
 
-$$d_{i,t+1} = d_{i,t} \cdot (1 + r_b)$$
+$$
+d_{i,t+1} = d_{i,t} \cdot (1 + r_b)
+$$
 
 The annualised equivalent at typical step frequencies (e.g. 500 steps per year) is:
 
-$$r_b^{\text{annual}} \approx (1 + r_b)^{500} - 1$$
+$$
+r_b^{\text{annual}} \approx (1 + r_b)^{500} - 1
+$$
 
 For $r_b = 0.0003$, this gives approximately 16% per year — a high but not unrealistic unsecured borrowing rate that penalises prolonged heavy leverage.
 
@@ -302,7 +342,9 @@ Interest accrual is the mechanism by which **time harms leveraged positions**. E
 
 The simulation enforces a hard leverage cap $L_{\max}$. At the end of each step, after the price has updated, every agent's leverage is checked:
 
-$$\text{if } L_{i,t} > L_{\max}: \text{ margin call}$$
+$$
+\text{if } L_{i,t} > L_{\max}: \text{ margin call}
+$$
 
 ### 6.3 Forced Liquidation
 
@@ -310,25 +352,35 @@ When a margin call fires, the agent must sell enough shares to bring leverage ba
 
 Let $W = W_{i,t}$ (current wealth) and $q = q_{i,t}$ (current shares). The target share count $q^*$ that achieves $L = L_{\max}$ is found by solving:
 
-$$L_{\max} = \frac{P_t \cdot q^*}{W_{i,t}}$$
+$$
+L_{\max} = \frac{P_t \cdot q^*}{W_{i,t}}
+$$
 
-$$q^* = \frac{L_{\max} \cdot W_{i,t}}{P_t}$$
+$$
+q^* = \frac{L_{\max} \cdot W_{i,t}}{P_t}
+$$
 
 Shares to sell: $\Delta q = q - q^*$
 
 Note that $W_{i,t}$ does not change when proceeds exactly repay debt (selling shares and repaying debt keeps wealth constant):
 
-$$W \leftarrow c + P(q - \Delta q) - (d - P \Delta q) = c + Pq - d = W$$
+$$
+W \leftarrow c + P(q - \Delta q) - (d - P \Delta q) = c + Pq - d = W
+$$
 
 This is a crucial insight: **selling to reduce leverage does not directly increase wealth** — it just reduces the size of both sides of the balance sheet. Wealth only recovers if prices subsequently rise.
 
 In practice, a minimum liquidation fraction $\phi$ is also enforced so that each margin call makes meaningful progress:
 
-$$\Delta q = \max\!\left(q - q^*,\; \phi \cdot q\right)$$
+$$
+\Delta q = \max\!\left(q - q^*,\; \phi \cdot q\right)
+$$
 
 **Default** occurs when, even after full liquidation ($q = 0$), wealth is still non-positive:
 
-$$W_{i,t} = c_{i,t} - d_{i,t} \leq 0 \implies \text{default}$$
+$$
+W_{i,t} = c_{i,t} - d_{i,t} \leq 0 \implies \text{default}
+$$
 
 A defaulted agent is removed from the market (`is_active = False`).
 
@@ -342,7 +394,9 @@ The feedback loop that creates Minsky-style crashes operates through three chann
 
 Formally, if a price drop $\Delta P < 0$ occurs, the change in leverage for agent $i$ is:
 
-$$\Delta L_i \approx \frac{q_i}{W_i} \Delta P - \frac{P q_i}{W_i^2} \cdot q_i \Delta P = \frac{q_i \Delta P}{W_i} \left(1 - L_i\right)$$
+$$
+\Delta L_i \approx \frac{q_i}{W_i} \Delta P - \frac{P q_i}{W_i^2} \cdot q_i \Delta P = \frac{q_i \Delta P}{W_i} \left(1 - L_i\right)
+$$
 
 For $L_i > 1$ (leveraged), this is negative times a negative — leverage **increases** when prices fall. This is the mathematical core of the Minsky instability mechanism.
 
@@ -354,15 +408,21 @@ For $L_i > 1$ (leveraged), this is negative times a negative — leverage **incr
 
 The fundamental trader believes prices are mean-reverting toward intrinsic value. The mispricing signal is:
 
-$$s_{i,t} = \frac{F_t - P_t}{F_t}$$
+$$
+s_{i,t} = \frac{F_t - P_t}{F_t}
+$$
 
 Positive $s$ means the asset is undervalued; negative means overvalued. The desired share position is:
 
-$$q_{i,t}^* = \kappa_F \cdot s_{i,t} \cdot q_{\max}$$
+$$
+q_{i,t}^* = \kappa_F \cdot s_{i,t} \cdot q_{\max}
+$$
 
 where $\kappa_F$ is the sensitivity parameter and $q_{\max}$ is the maximum position size. The agent submits an order to move from their current position $q_{i,t}$ toward $q_{i,t}^*$:
 
-$$\Delta q = q_{i,t}^* - q_{i,t}$$
+$$
+\Delta q = q_{i,t}^* - q_{i,t}
+$$
 
 $\Delta q > 0$: buy order. $\Delta q < 0$: sell order (capped at $q_{i,t}$, no short-selling).
 
@@ -372,11 +432,15 @@ Fundamental traders are **stabilising**: they provide a force pulling prices tow
 
 The momentum trader extrapolates recent price trends. The signal is the rolling return over the last $k$ steps:
 
-$$m_t = \frac{P_t - P_{t-k}}{P_{t-k}}$$
+$$
+m_t = \frac{P_t - P_{t-k}}{P_{t-k}}
+$$
 
 Desired position:
 
-$$q_{i,t}^* = \kappa_M \cdot m_t \cdot q_{\max}$$
+$$
+q_{i,t}^* = \kappa_M \cdot m_t \cdot q_{\max}
+$$
 
 Positive momentum → buy. Negative momentum → sell.
 
@@ -417,7 +481,9 @@ The Markov property requires that the transition distribution depends only on th
 
 The observation vector $\mathbf{o}_t \in \mathbb{R}^{11}$ at step $t$ is:
 
-$$\mathbf{o}_t = \left[\frac{P_t}{F_t},\; r_t,\; \sigma_t^{\text{roll}},\; m_t,\; c_{i,t},\; q_{i,t},\; d_{i,t},\; L_{i,t},\; \bar{L}_t,\; n_t^{\text{MC}},\; \text{DD}_t \right]$$
+$$
+\mathbf{o}_t = \left[\frac{P_t}{F_t},\; r_t,\; \sigma_t^{\text{roll}},\; m_t,\; c_{i,t},\; q_{i,t},\; d_{i,t},\; L_{i,t},\; \bar{L}_t,\; n_t^{\text{MC}},\; \text{DD}_t \right]
+$$
 
 | Feature | Description |
 |---------|-------------|
@@ -457,17 +523,23 @@ Three reward functions are compared across experiments.
 
 **Profit-only reward**
 
-$$R_t^{\text{profit}} = W_{i,t+1} - W_{i,t}$$
+$$
+R_t^{\text{profit}} = W_{i,t+1} - W_{i,t}
+$$
 
 or equivalently as a percentage change:
 
-$$R_t^{\text{profit}} = \frac{W_{i,t+1} - W_{i,t}}{W_{i,t}}$$
+$$
+R_t^{\text{profit}} = \frac{W_{i,t+1} - W_{i,t}}{W_{i,t}}
+$$
 
 This is the standard financial objective. The hypothesis is that an agent trained purely on this signal will learn to increase leverage during calm periods — rational at the individual level, destabilising at the system level.
 
 **Risk-adjusted reward**
 
-$$R_t^{\text{risk}} = \Delta W_t - \lambda \cdot \text{DD}_t - \mu \cdot L_{i,t}$$
+$$
+R_t^{\text{risk}} = \Delta W_t - \lambda \cdot \text{DD}_t - \mu \cdot L_{i,t}
+$$
 
 where:
 - $\text{DD}_t = \frac{P_t - \max_{s \leq t} P_s}{\max_{s \leq t} P_s} \leq 0$ is the drawdown (always non-positive)
@@ -478,7 +550,9 @@ The $\lambda \cdot \text{DD}_t$ term punishes the agent for holding through a pr
 
 **System-aware reward**
 
-$$R_t^{\text{sys}} = \Delta W_t - \lambda \cdot \text{DD}_t - \mu \cdot L_{i,t} - \gamma \cdot \bar{L}_t$$
+$$
+R_t^{\text{sys}} = \Delta W_t - \lambda \cdot \text{DD}_t - \mu \cdot L_{i,t} - \gamma \cdot \bar{L}_t
+$$
 
 The additional $\gamma \cdot \bar{L}_t$ term penalises the agent when aggregate market leverage is high, regardless of their own leverage. This tests whether an agent can be incentivised to internalise **systemic risk** — the negative externality their leverage imposes on the system.
 
@@ -486,15 +560,21 @@ The additional $\gamma \cdot \bar{L}_t$ term penalises the agent when aggregate 
 
 For discrete state-action spaces, the value of taking action $a$ in state $s$ and following policy $\pi$ thereafter is the Q-function:
 
-$$Q^\pi(s, a) = \mathbb{E}_\pi \left[\sum_{k=0}^{\infty} \gamma^k R_{t+k} \,\Big|\, s_t = s,\, a_t = a\right]$$
+$$
+Q^\pi(s, a) = \mathbb{E}_\pi \left[\sum_{k=0}^{\infty} \gamma^k R_{t+k} \,\Big|\, s_t = s,\, a_t = a\right]
+$$
 
 The optimal Q-function satisfies the **Bellman optimality equation**:
 
-$$Q^*(s, a) = \mathbb{E}\left[R_t + \gamma \max_{a'} Q^*(s_{t+1}, a') \,\Big|\, s_t = s,\, a_t = a\right]$$
+$$
+Q^*(s, a) = \mathbb{E}\left[R_t + \gamma \max_{a'} Q^*(s_{t+1}, a') \,\Big|\, s_t = s,\, a_t = a\right]
+$$
 
 Tabular Q-learning iteratively approximates $Q^*$ using the update rule:
 
-$$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \underbrace{\left[R_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t)\right]}_{\text{TD error}}$$
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \underbrace{\left[R_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t)\right]}_{\text{TD error}}
+$$
 
 where $\alpha \in (0,1]$ is the learning rate. The **temporal difference (TD) error** is the discrepancy between the current estimate and the Bellman target. The update moves the estimate toward the target at rate $\alpha$.
 
@@ -504,11 +584,15 @@ For the continuous observation space in this simulation, tabular Q-learning requ
 
 DQN (Mnih et al., 2015) approximates the Q-function with a neural network $Q_\theta(s, a)$ parameterised by weights $\theta$. The loss function is:
 
-$$\mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[\left(y - Q_\theta(s, a)\right)^2\right]$$
+$$
+\mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[\left(y - Q_\theta(s, a)\right)^2\right]
+$$
 
 where the target is:
 
-$$y = r + \gamma \max_{a'} Q_{\theta^-}(s', a')$$
+$$
+y = r + \gamma \max_{a'} Q_{\theta^-}(s', a')
+$$
 
 Two stabilisation techniques are essential:
 
@@ -520,7 +604,9 @@ Two stabilisation techniques are essential:
 
 During training, the agent uses an $\varepsilon$-greedy policy:
 
-$$a_t = \begin{cases} \text{random action} & \text{with probability } \varepsilon \\ \arg\max_a Q_\theta(s_t, a) & \text{with probability } 1 - \varepsilon \end{cases}$$
+$$
+a_t = \begin{cases} \text{random action} & \text{with probability } \varepsilon \\ \arg\max_a Q_\theta(s_t, a) & \text{with probability } 1 - \varepsilon \end{cases}
+$$
 
 $\varepsilon$ is annealed from 1.0 (fully random) to a small floor (e.g. 0.05) over the course of training. Early exploration builds diverse experience; later exploitation refines the learned policy.
 
@@ -532,7 +618,9 @@ $\varepsilon$ is annealed from 1.0 (fully random) to a small floor (e.g. 0.05) o
 
 The standard deviation of log returns over a window of $W$ steps:
 
-$$\sigma_t = \sqrt{\frac{1}{W-1} \sum_{k=0}^{W-1} (r_{t-k} - \bar{r})^2}$$
+$$
+\sigma_t = \sqrt{\frac{1}{W-1} \sum_{k=0}^{W-1} (r_{t-k} - \bar{r})^2}
+$$
 
 where $r_t = \ln(P_t / P_{t-1})$ and $\bar{r}$ is the sample mean over the window.
 
@@ -542,7 +630,9 @@ Minsky's hypothesis predicts a characteristic **volatility pattern**: low and fa
 
 The relative deviation of market price from fundamental value:
 
-$$M_t = \frac{P_t - F_t}{F_t}$$
+$$
+M_t = \frac{P_t - F_t}{F_t}
+$$
 
 $M_t > 0$: overvaluation (bubble territory). $M_t < 0$: undervaluation (post-crash overshoot).
 
@@ -550,17 +640,23 @@ $M_t > 0$: overvaluation (bubble territory). $M_t < 0$: undervaluation (post-cra
 
 **Bubble**: price has deviated above fundamental value by more than threshold $\theta_b$:
 
-$$\text{Bubble}_t = \mathbf{1}\left[M_t > \theta_b\right]$$
+$$
+\text{Bubble}_t = \mathbf{1}\left[M_t > \theta_b\right]
+$$
 
 **Crash**: price has fallen by more than threshold $\theta_c$ over a window of $k$ steps:
 
-$$\text{Crash}_t = \mathbf{1}\left[\frac{P_t - P_{t-k}}{P_{t-k}} < -\theta_c\right]$$
+$$
+\text{Crash}_t = \mathbf{1}\left[\frac{P_t - P_{t-k}}{P_{t-k}} < -\theta_c\right]
+$$
 
 ### 9.4 Maximum Drawdown
 
 The largest peak-to-trough price decline observed up to step $t$:
 
-$$\text{MDD}_t = \min_{s \leq t} \frac{P_s - \max_{u \leq s} P_u}{\max_{u \leq s} P_u}$$
+$$
+\text{MDD}_t = \min_{s \leq t} \frac{P_s - \max_{u \leq s} P_u}{\max_{u \leq s} P_u}
+$$
 
 Maximum drawdown is a standard risk metric in both academic finance and portfolio management. In the simulation, it captures the severity of the crash phase.
 
@@ -568,7 +664,9 @@ Maximum drawdown is a standard risk metric in both academic finance and portfoli
 
 The annualised risk-adjusted return for agent $i$:
 
-$$\text{SR}_i = \frac{\bar{r}_i}{\sigma_{r_i}} \cdot \sqrt{N_{\text{steps per year}}}$$
+$$
+\text{SR}_i = \frac{\bar{r}_i}{\sigma_{r_i}} \cdot \sqrt{N_{\text{steps per year}}}
+$$
 
 where $\bar{r}_i$ and $\sigma_{r_i}$ are the mean and standard deviation of the agent's per-step wealth returns. The Sharpe ratio penalises strategies that achieve high returns only by accepting high volatility — exactly what profit-only RL agents tend to do.
 
@@ -576,7 +674,9 @@ where $\bar{r}_i$ and $\sigma_{r_i}$ are the mean and standard deviation of the 
 
 The Gini coefficient $G \in [0,1]$ measures wealth inequality across agents. For a vector of non-negative wealth values $W_1 \leq W_2 \leq \cdots \leq W_N$:
 
-$$G = \frac{2 \sum_{i=1}^{N} i W_i}{N \sum_{i=1}^{N} W_i} - \frac{N+1}{N}$$
+$$
+G = \frac{2 \sum_{i=1}^{N} i W_i}{N \sum_{i=1}^{N} W_i} - \frac{N+1}{N}
+$$
 
 $G = 0$ is perfect equality; $G = 1$ is maximum inequality (one agent holds all wealth). Crashes tend to increase $G$ sharply as heavily leveraged agents default while cash-holding agents survive.
 
