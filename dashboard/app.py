@@ -234,8 +234,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data, tab_guide = st.tabs(
-    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data", "Guide"]
+tab_overview, tab_market, tab_risk, tab_agents, tab_data, tab_experiments, tab_guide = st.tabs(
+    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Raw Data", "Experiments", "Guide"]
 )
 
 _no_sim = st.session_state.df is None
