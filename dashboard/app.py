@@ -506,13 +506,49 @@ with tab_data:
 
 with tab_guide:
     st.subheader("How the simulation works")
-    st.markdown(
-        "Each run is a discrete-time agent-based market. Agents trade a single risky asset "
-        "against a fundamental value that drifts randomly. Price moves in response to net "
-        "demand. Agents can borrow to buy more than their cash allows; this leverage is "
-        "the core mechanism behind Minsky's Financial Instability Hypothesis: stability "
-        "encourages risk-taking, which creates fragility, which eventually causes a crash."
-    )
+    st.markdown("""
+- A market runs for a set number of discrete time steps.
+- Each step, agents observe the current price and submit buy or sell orders.
+- Net demand moves the price up or down via a price-impact function.
+- A separate **fundamental value** tracks what the asset is actually worth, drifting slowly over time.
+- Agents can borrow to buy more than their cash allows, taking on **leverage** (debt).
+- Each step, debt accrues interest. If an agent's leverage exceeds the limit, they are **force-liquidated**.
+- Forced selling pushes the price down, which can trigger more margin calls — the cascade is the crash.
+""")
+
+    st.divider()
+
+    st.subheader("The Minsky idea, explained simply")
+    st.markdown("""
+Hyman Minsky argued that **financial crises are not caused by external shocks — they grow from within**.
+
+Here is how the cycle works:
+
+1. **Calm period.** The market is stable. Prices rise slowly. Agents see that borrowing to buy assets is profitable.
+2. **Leverage builds.** More agents borrow more. Asset prices rise further, making the borrowing look even smarter.
+3. **Fragility.** Everyone is now highly leveraged. The market looks fine on the surface, but a small drop is now dangerous.
+4. **Trigger.** A small price fall causes the most leveraged agents to breach their margin limit.
+5. **Cascade.** Forced selling pushes prices down further, breaching more limits, forcing more selling.
+6. **Minsky moment.** The crash. It looks sudden from the outside, but the conditions were built up over the entire calm period.
+
+The key insight: **stability breeds instability**. The longer things go well, the more risk accumulates.
+
+This simulation lets you test that idea directly. Set momentum traders high and watch the cycle play out.
+""")
+
+    col_l, col_r = st.columns(2)
+    with col_l:
+        st.link_button(
+            "Full theoretical background",
+            "https://github.com/horse-3903/minsky-market-sim/blob/main/docs/theory.md",
+            use_container_width=True,
+        )
+    with col_r:
+        st.link_button(
+            "Experiment 2 research report",
+            "https://github.com/horse-3903/minsky-market-sim/blob/main/docs/report.md",
+            use_container_width=True,
+        )
 
     st.divider()
 
