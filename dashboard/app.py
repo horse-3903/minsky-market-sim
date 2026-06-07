@@ -220,6 +220,11 @@ if _no_sim:
     for _t in (tab_overview, tab_market, tab_risk, tab_agents, tab_data):
         with _t:
             st.subheader("Configure parameters in the sidebar and press Run Simulation to begin.")
+            st.markdown(
+                "New here? The **Guide** tab (far right) explains every parameter and what each chart measures. "
+                "Or jump straight in with one of the presets below — each one is calibrated to demonstrate "
+                "a different market regime."
+            )
             st.subheader("Or try a preset")
             p_cols = st.columns(4)
             for col, key in zip(p_cols, list(PRESETS.keys())):
