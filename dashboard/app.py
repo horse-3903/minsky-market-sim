@@ -394,11 +394,58 @@ with tab_agents:
 
 # ── Experiments ──────────────────────────────────────────────────────────────
 
+BASELINE_CSV = ROOT / "results" / "baseline" / "baseline_seed42_timeseries.csv"
+BASELINE_JSON = ROOT / "results" / "baseline" / "baseline_seed42_summary.json"
 SWEEP_AGG = ROOT / "results" / "vary_momentum" / "aggregated.csv"
 SWEEP_RAW = ROOT / "results" / "vary_momentum" / "raw_results.csv"
 SWEEP_STATS = ROOT / "results" / "vary_momentum" / "statistical_tests.json"
 
 with tab_experiments:
+
+    # ── Experiment 1 ─────────────────────────────────────────────────────────
+    st.subheader("Experiment 1: Stable Baseline")
+    st.caption(
+        "20 fundamental traders, 5 momentum traders, 10 noise traders. "
+        "Max leverage 2.0, low price impact. Establishes the stable equilibrium "
+        "that later experiments perturb."
+    )
+
+    if BASELINE_CSV.exists() and BASELINE_JSON.exists():
+        import json as _json
+        with open(BASELINE_JSON) as _f:
+            b = _json.load(_f)
+
+        m1, m2, m3, m4, m5, m6 = st.columns(6)
+        m1.metric("Final price", f"{b['final_price']:.1f}")
+        m2.metric("Max mispricing", f"{b['max_abs_mispricing_pct']:.1f}%")
+        m3.metric("Max drawdown", f"{b['max_drawdown_pct']:.1f}%")
+        m4.metric("Sharpe (ann.)", f"{b['annualised_sharpe']:.2f}")
+        m5.metric("Margin calls", f"{b['total_margin_calls']}")
+        m6.metric("Crashes", f"{b['n_crash_steps']}")
+
+        b_df = pd.read_csv(BASELINE_CSV)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.plotly_chart(price_chart(b_df), use_container_width=True)
+        with col2:
+            st.plotly_chart(leverage_chart(b_df), use_container_width=True)
+
+        col3, col4 = st.columns(2)
+        with col3:
+            st.plotly_chart(minsky_chart(b_df), use_container_width=True)
+        with col4:
+            st.plotly_chart(wealth_chart(b_df), use_container_width=True)
+
+        st.download_button(
+            "Download baseline time-series (CSV)",
+            data=b_df.to_csv(index=False).encode(),
+            file_name="baseline_seed42_timeseries.csv",
+            mime="text/csv",
+        )
+
+    st.divider()
+
+    # ── Experiment 2 ─────────────────────────────────────────────────────────
     st.subheader("Experiment 2: Momentum Trader Share Sweep")
     st.caption(
         "Varies the fraction of momentum traders from 0% to 80% (40 total agents, "
