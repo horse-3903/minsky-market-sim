@@ -250,8 +250,8 @@ st.divider()
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 
-tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data = st.tabs(
-    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data"]
+tab_overview, tab_market, tab_risk, tab_agents, tab_experiments, tab_data, tab_guide = st.tabs(
+    ["Overview", "Market", "Leverage & Risk", "Agent Performance", "Experiments", "Raw Data", "Guide"]
 )
 
 # ── Overview ─────────────────────────────────────────────────────────────────
@@ -470,3 +470,186 @@ with tab_data:
             mime="application/json",
             use_container_width=True,
         )
+
+# ── Guide ─────────────────────────────────────────────────────────────────────
+
+with tab_guide:
+    st.subheader("How the simulation works")
+    st.markdown(
+        "Each run is a discrete-time agent-based market. Agents trade a single risky asset "
+        "against a fundamental value that drifts randomly. Price moves in response to net "
+        "demand. Agents can borrow to buy more than their cash allows — this leverage is "
+        "the core mechanism behind Minsky's Financial Instability Hypothesis: stability "
+        "encourages risk-taking, which creates fragility, which eventually causes a crash."
+    )
+
+    st.divider()
+
+    # ── Sidebar parameters ────────────────────────────────────────────────────
+    st.subheader("Sidebar parameters")
+
+    with st.expander("General", expanded=True):
+        st.markdown("""
+**Steps** — how many time steps the simulation runs. More steps give leverage cycles more
+time to develop. 500 is enough to see a crash in fragile configurations; 1000+ reveals
+long-run wealth dynamics.
+
+**Random seed** — fixes the random number generator so results are reproducible. Change
+the seed to get a different draw from the same distribution — useful for checking whether
+a crash is systematic or a fluke.
+""")
+
+    with st.expander("Agent Counts"):
+        st.markdown("""
+**Fundamental traders** — stabilising force. They buy when price is below fundamental
+value and sell when above. More fundamental traders → stronger mean-reversion → harder
+to sustain a bubble. Set to zero and the price will wander freely.
+
+**Momentum traders** — destabilising force. They buy into rising prices and sell into
+falling prices, amplifying trends. This is the key Minsky lever: above ~40% of total
+agents, their feedback loop overwhelms the fundamentalists and crashes become likely.
+Combined with high *Momentum sensitivity*, even 20–30% is enough.
+
+**Noise traders** — submit random buy/sell orders each step. They add baseline volatility
+and prevent the market locking into unrealistic deterministic cycles. Increasing noise
+traders increases churn but doesn't systematically drive price in any direction.
+""")
+
+    with st.expander("Market Parameters"):
+        st.markdown("""
+**Price impact (α)** — how much the price moves per unit of net demand. Higher α means
+individual orders have more market impact. The model uses:
+`P_{t+1} = P_t × exp(α × net_demand / liquidity + noise)`.
+At α = 0.001 the market is very deep; at α = 0.05 even small imbalances cause large
+price swings.
+
+**Liquidity (λ)** — scales the effective price impact. Lower liquidity amplifies each
+order's effect (equivalent to raising α). Think of it as market depth: a thin market
+(λ = 0.2) is far more volatile than a deep one (λ = 3.0).
+
+**Price noise σ** — standard deviation of the random noise term added to the log price
+each step. This represents background market microstructure noise. It also drives the
+momentum signal: if noise is near zero, momentum agents see no trend and barely trade.
+Values around 0.008–0.01 are needed for momentum to generate meaningful signals.
+
+**Fundamental σ** — volatility of the true fundamental value process (GBM). A higher
+value means fair value itself drifts more, making mispricing harder to detect and giving
+fundamental traders a weaker signal. Kept small (0.003–0.005) so crashes are agent-driven,
+not fundamental-driven.
+""")
+
+    with st.expander("Leverage & Margin"):
+        st.markdown("""
+**Max leverage (L_max)** — the leverage ratio at which a margin call is triggered.
+Leverage is defined as `|position value| / wealth`. At L_max = 3.0, an agent whose
+position is worth 3× their net wealth gets force-liquidated. Higher values allow more
+risk-taking before the margin call fires — dramatically increasing crash severity when
+it eventually does.
+
+**Borrowing rate (per step)** — interest charged on outstanding debt each step as
+`debt × (1 + r_b)`. At r_b = 0.0003 and 500 steps, an agent who borrows 1000 at step 0
+owes ~1162 by step 500 (14% compounded). Higher rates drain leveraged agents faster,
+sometimes triggering defaults even without a price crash.
+""")
+
+    with st.expander("Agent Parameters"):
+        st.markdown("""
+**Initial cash per agent** — starting capital for every agent. All agents begin with
+this amount in cash and zero shares. Relative wealth diverges over time through trading
+performance. This mainly sets the scale of the simulation — changing it doesn't alter
+dynamics, only absolute price/wealth numbers.
+
+**Fundamental sensitivity** — how aggressively fundamental traders act on mispricing.
+Their target position is `sensitivity × (F−P)/F × max_position`. At 0.5 they trade
+half their maximum position when price is 100% mispriced. Higher values make them trade
+larger amounts and more quickly correct mispricings — strengthening the stabilising force.
+
+**Momentum sensitivity** — the single most important parameter for generating crashes.
+Momentum traders target `sensitivity × rolling_return × max_position` shares. At the
+default of 0.3, rolling returns are small (~0.002) so agents barely trade. At 1.5–2.0
+they build large positions aggressively, creating the feedback loop needed for a Minsky
+cycle. **If you want crashes, set this to 1.5 or higher.**
+""")
+
+    st.divider()
+
+    # ── Charts ────────────────────────────────────────────────────────────────
+    st.subheader("What the charts show")
+
+    with st.expander("Overview tab"):
+        st.markdown("""
+**Price vs Fundamental** (top-left sparkline) — market price (blue) and true fair value
+(green dashed). A persistent gap is a bubble or crash in progress. Red shaded regions
+mark crash steps.
+
+**Avg Leverage** (top-right) — cross-sectional mean leverage across active agents.
+Rising leverage during a calm period is the Minsky buildup phase.
+
+**Rolling Volatility** (bottom-left) — 20-step rolling standard deviation of returns.
+Spikes mark periods of rapid price movement.
+
+**Mispricing %** (bottom-right) — `(P − F) / F × 100`. Positive = bubble, negative = crash.
+""")
+
+    with st.expander("Market tab"):
+        st.markdown("""
+**Market Price vs Fundamental Value** — full resolution time series. Red vertical bands
+show crash steps (price fell >20% over 20 steps).
+
+**Relative Mispricing** — signed percentage gap between price and fundamental. Fill
+colour turns red above zero (overvalued) and green below (undervalued).
+
+**Rolling Return Volatility** — annualised volatility measure. Calm-crisis cycles appear
+as long flat periods followed by sharp spikes.
+
+**Price Drawdown from Peak** — percentage decline from the running all-time high.
+A −99% drawdown means the market essentially collapsed.
+
+**Return Distribution** — histogram of all step-by-step returns. A Minsky collapse
+produces fat left tails and a bimodal distribution.
+""")
+
+    with st.expander("Leverage & Risk tab"):
+        st.markdown("""
+**Leverage over Time** — average (filled area) and maximum (dotted) agent leverage.
+Watch for the buildup-then-collapse pattern: leverage rises as momentum traders pile in,
+then crashes suddenly when margin calls fire.
+
+**Minsky Finance-State Composition** — stacked area chart showing what fraction of
+active agents are in each regime each step:
+- **Hedge** (green): leverage < 1.5 — income covers all obligations
+- **Speculative** (amber): leverage 1.5–3.0 — must roll over debt
+- **Ponzi** (red): leverage ≥ 3.0 — must sell assets or borrow just to service interest
+
+A rising Ponzi fraction is the canonical Minsky warning sign.
+
+**Margin Calls & Defaults** — bar charts of forced liquidations (orange) and
+bankruptcies (dark red) per step. Clusters of margin calls create the self-reinforcing
+selling cascade.
+""")
+
+    with st.expander("Agent Performance tab"):
+        st.markdown("""
+**Average Wealth by Agent Type** — tracks mean wealth over time for fundamental,
+momentum, noise, and RL agent groups. In stable markets, fundamental traders
+outperform. In crash scenarios, whoever is short (or cash-heavy) at the right moment
+wins — often noise traders.
+
+**Wealth Inequality (Gini)** — 0 = perfectly equal, 1 = one agent holds everything.
+Rises during booms as momentum traders profit, then can collapse during crashes as
+leveraged agents are wiped out — paradoxically equalising wealth through shared ruin.
+""")
+
+    with st.expander("Experiments tab"):
+        st.markdown("""
+Pre-computed results from **Experiment 2**: sweeping the momentum trader fraction from
+0% to 80% across 10 seeds each.
+
+The four charts show how crash frequency, peak leverage, maximum drawdown, and final
+wealth inequality all respond to increasing momentum trader dominance. The statistical
+table (Spearman ρ and Kruskal-Wallis H) confirms all relationships are significant at
+p < 10⁻⁹.
+
+Key finding: there is a sharp phase transition at ~35–45% momentum traders. Below it,
+markets are stable across all seeds. Above it, crashes are near-certain.
+""")
