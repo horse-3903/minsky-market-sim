@@ -229,7 +229,10 @@ if _no_sim:
                 preset = PRESETS[key]
                 with col:
                     st.markdown(f"**{preset['label']}**")
-                    st.caption(preset["description"])
+                    st.markdown(
+                        f"<div style='min-height:60px;font-size:0.8rem;color:gray'>{preset['description']}</div>",
+                        unsafe_allow_html=True,
+                    )
                     st.button(
                         "Load & Run",
                         key=f"preset_btn_{key}_{_t}",
