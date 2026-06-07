@@ -212,6 +212,12 @@ st.caption(
 
 st.markdown("""
 <style>
+.stTabs [data-baseweb="tab-list"] {
+    width: 100%;
+}
+.stTabs [data-baseweb="tab-list"] button {
+    flex: 1;
+}
 .stTabs [data-baseweb="tab-list"] button:nth-child(7) {
     background-color: rgba(37, 99, 235, 0.15);
     border-radius: 6px;
