@@ -13,7 +13,7 @@ Agent-based reinforcement learning simulation of Minsky's Financial Instability 
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/horse-3903/minsky-market-sim?style=flat-square)](https://github.com/horse-3903/minsky-market-sim/commits/main)
 
-### [Live Demo: minsky-market-sim.streamlit.app](https://minsky-market-sim.streamlit.app)
+### [Live Demo: minsky-market-sim.streamlit.app](https://minsky-market-sim.streamlit.app) - [Showcase](https://horse-3903.github.io/showcase/minsky)
 
 </div>
 
