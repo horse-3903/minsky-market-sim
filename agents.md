@@ -27,8 +27,8 @@ An agent defaults (`is_active = False`) when `wealth ≤ 0`.
 
 ### Buying and selling
 
-- **Buy** — if the agent has enough cash, the cost is deducted directly. If not, the shortfall is added to `debt` (borrowing to buy).
-- **Sell** — proceeds first repay `debt`; any surplus goes to `cash`.
+- **Buy**: if the agent has enough cash, the cost is deducted directly. If not, the shortfall is added to `debt` (borrowing to buy).
+- **Sell**: proceeds first repay `debt`; any surplus goes to `cash`.
 
 ### Interest accrual
 
@@ -125,9 +125,9 @@ desired_shares = sensitivity × m × max_position
 **Role:** Random. Provides baseline market activity and prevents the market from becoming trivially stable.
 
 **Behaviour:** Each step, independently and uniformly draws one of:
-- `buy` — purchase a uniform random quantity in `[0, max_trade]`
-- `sell` — sell a uniform random quantity in `[0, min(max_trade, current_shares)]`
-- `hold` — do nothing
+- `buy`: purchase a uniform random quantity in `[0, max_trade]`
+- `sell`: sell a uniform random quantity in `[0, min(max_trade, current_shares)]`
+- `hold`: do nothing
 
 **Key parameters:**
 

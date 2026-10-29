@@ -1,23 +1,23 @@
 # Endogenous Financial Fragility in an Agent-Based Market: A Simulation Study of Minsky's Financial Instability Hypothesis
 
 **Rafael Chong**
-Agent-Based Modelling & Quantitative Finance — Independent Research Project
+Agent-Based Modelling & Quantitative Finance, Independent Research Project
 
 ---
 
 ## Abstract
 
-This report presents an agent-based simulation designed to test Minsky's Financial Instability Hypothesis (FIH): the proposition that financial stability is self-undermining because rational agents accumulate leverage during calm periods, creating systemic fragility that amplifies small shocks into crises. The simulation features four heterogeneous agent types (fundamental, momentum, noise, and a planned reinforcement learning agent), a log-linear price-impact mechanism, and an explicit balance sheet with debt, interest accrual, margin calls, and forced liquidation. Experiment 2 sweeps the share of momentum traders from 0% to 80% across 10 independent seeds per condition. Results show a sharp phase transition: markets with $\leq 30\%$ momentum traders produce zero crashes across all seeds; above 40% momentum trader dominance, crash frequency rises dramatically (Spearman $\rho = +0.894$, $p < 10^{-30}$). Peak leverage and maximum drawdown scale monotonically with momentum share ($\rho = +0.977$ and $\rho = -0.833$, respectively, both $p < 10^{-23}$). These results confirm the Minsky mechanism as an emergent property of agent interaction — no crash is encoded in the model; fragility arises endogenously from individually rational trend-following behaviour.
+This report presents an agent-based simulation designed to test Minsky's Financial Instability Hypothesis (FIH): the proposition that financial stability is self-undermining because rational agents accumulate leverage during calm periods, creating systemic fragility that amplifies small shocks into crises. The simulation features four heterogeneous agent types (fundamental, momentum, noise, and a planned reinforcement learning agent), a log-linear price-impact mechanism, and an explicit balance sheet with debt, interest accrual, margin calls, and forced liquidation. Experiment 2 sweeps the share of momentum traders from 0% to 80% across 10 independent seeds per condition. Results show a sharp phase transition: markets with $\leq 30\%$ momentum traders produce zero crashes across all seeds; above 40% momentum trader dominance, crash frequency rises dramatically (Spearman $\rho = +0.894$, $p < 10^{-30}$). Peak leverage and maximum drawdown scale monotonically with momentum share ($\rho = +0.977$ and $\rho = -0.833$, respectively, both $p < 10^{-23}$). These results confirm the Minsky mechanism as an emergent property of agent interaction, no crash is encoded in the model; fragility arises endogenously from individually rational trend-following behaviour.
 
 ---
 
 ## 1. Introduction
 
-Hyman Minsky argued in *Stabilizing an Unstable Economy* (1986) that market economies are inherently prone to cycles of stability and crisis. His core claim was counterintuitive: prolonged calm is dangerous. When agents observe stability, they rationalise taking on more debt and risk; this demand drives asset prices above fundamental value; the inflated balance sheets become fragile; a small shock triggers forced selling; falling prices trigger more forced selling. The crisis is not caused by an external event — it is the endogenous product of the preceding boom.
+Hyman Minsky argued in *Stabilizing an Unstable Economy* (1986) that market economies are inherently prone to cycles of stability and crisis. His core claim was counterintuitive: prolonged calm is dangerous. When agents observe stability, they rationalise taking on more debt and risk; this demand drives asset prices above fundamental value; the inflated balance sheets become fragile; a small shock triggers forced selling; falling prices trigger more forced selling. The crisis is not caused by an external event, it is the endogenous product of the preceding boom.
 
-Despite its descriptive power — Minsky's work gained mainstream attention after the 2008 financial crisis — the FIH is difficult to test empirically. The causal chain from stability to fragility to crash is confounded by concurrent policy changes, technological shocks, and global capital flows. Agent-based modelling (ABM) offers a controlled alternative: build a minimal model with the proposed mechanism, remove confounders by construction, and ask whether the predicted dynamics emerge.
+Despite its descriptive power, Minsky's work gained mainstream attention after the 2008 financial crisis, the FIH is difficult to test empirically. The causal chain from stability to fragility to crash is confounded by concurrent policy changes, technological shocks, and global capital flows. Agent-based modelling (ABM) offers a controlled alternative: build a minimal model with the proposed mechanism, remove confounders by construction, and ask whether the predicted dynamics emerge.
 
-This project builds such a model. The market begins in a controlled stable equilibrium — price at fundamental value, near-zero volatility, no debt — and evolves entirely from agent interactions. The research questions addressed in this report are:
+This project builds such a model. The market begins in a controlled stable equilibrium, price at fundamental value, near-zero volatility, no debt, and evolves entirely from agent interactions. The research questions addressed in this report are:
 
 1. Does increasing the share of momentum traders endogenously generate leverage buildup and market crashes?
 2. Is there a critical threshold of momentum trader dominance above which market stability collapses?
@@ -60,7 +60,7 @@ $$
 P_{t+1} = P_t \cdot \exp\!\left(\mathrm{clip}\!\left(\frac{\alpha \tilde{D}_t}{\lambda} + \eta_t,\ -1.5,\ 1.5\right)\right)
 $$
 
-where $\tilde{D}_t = (\text{buy} - \text{sell}) / n_{\text{active}}$ is the per-agent net demand, $\alpha$ is price impact, $\lambda$ is market liquidity, and $\eta_t \sim \mathcal{N}(0, \sigma_\eta^2)$ is baseline noise. The exponent is clipped to $\pm 1.5$ to prevent numerical overflow in extreme momentum cascades; this bound allows single-step price moves of up to $\pm 78\%$ — far exceeding any observed market crash — so it does not artificially constrain normal dynamics.
+where $\tilde{D}_t = (\text{buy} - \text{sell}) / n_{\text{active}}$ is the per-agent net demand, $\alpha$ is price impact, $\lambda$ is market liquidity, and $\eta_t \sim \mathcal{N}(0, \sigma_\eta^2)$ is baseline noise. The exponent is clipped to $\pm 1.5$ to prevent numerical overflow in extreme momentum cascades; this bound allows single-step price moves of up to $\pm 78\%$, far exceeding any observed market crash, so it does not artificially constrain normal dynamics.
 
 ### 2.4 Agent Balance Sheet
 
@@ -169,7 +169,7 @@ For pairwise comparisons between specific conditions, Mann-Whitney U tests with 
 
 The transition is stark. At 30% momentum traders, no crashes occur across all 10 seeds. At 40%, the first crashes appear (in 1 of 10 seeds). At 50%, 9 of 10 seeds produce crashes. At 60% and above, price collapse to near-zero ($-99.99\%$ drawdown) occurs in every single run.
 
-The SD of crash steps narrows at high fractions — high-momentum regimes are deterministically catastrophic regardless of seed.
+The SD of crash steps narrows at high fractions, high-momentum regimes are deterministically catastrophic regardless of seed.
 
 ### 4.2 Statistical Significance
 
@@ -189,9 +189,9 @@ All tested metrics are statistically significant at $p < 10^{-9}$. The strongest
 
 ### 4.3 Wealth Inequality
 
-The Gini coefficient — a measure of wealth inequality — decreases with momentum fraction ($\rho = -0.860$). This is initially counterintuitive: one might expect high-leverage crashes to redistribute wealth upward.
+The Gini coefficient: a measure of wealth inequality, decreases with momentum fraction ($\rho = -0.860$). This is initially counterintuitive: one might expect high-leverage crashes to redistribute wealth upward.
 
-The explanation is a race-to-the-bottom dynamic. At 0–30% momentum, fundamental traders accumulate wealth steadily by exploiting mispricing; wealth diverges over $T = 500$ steps (Gini $\approx 0.50$–$0.53$). At 60–80% momentum, crashes are so frequent and severe that the market periodically wipes out all agents — momentum and fundamental alike — resetting wealth towards equality. The surviving agents (those who happened to be short or cash-heavy at crash moments) briefly hold high wealth, but subsequent crashes eliminate them too. Final Gini at 80% momentum is $0.14$, indicating near-equal (universally low) wealth.
+The explanation is a race-to-the-bottom dynamic. At 0-30% momentum, fundamental traders accumulate wealth steadily by exploiting mispricing; wealth diverges over $T = 500$ steps (Gini $\approx 0.50$-$0.53$). At 60-80% momentum, crashes are so frequent and severe that the market periodically wipes out all agents, momentum and fundamental alike, resetting wealth towards equality. The surviving agents (those who happened to be short or cash-heavy at crash moments) briefly hold high wealth, but subsequent crashes eliminate them too. Final Gini at 80% momentum is $0.14$, indicating near-equal (universally low) wealth.
 
 This result highlights that the Gini coefficient alone is insufficient to distinguish between prosperous equality and catastrophic equality.
 
@@ -199,7 +199,7 @@ This result highlights that the Gini coefficient alone is insufficient to distin
 
 Annualised Sharpe increases with momentum fraction ($\rho = +0.612$), reaching $7.94$ at 80% momentum. This is an artefact of how total-collapse-and-recovery dynamics interact with the Sharpe formula.
 
-At 60%+ momentum, price regularly crashes to near-zero and then recovers as the crash clears the market (all leveraged agents are liquidated, removing sell pressure). The recovery constitutes an extremely large positive return from a very low base. The distribution of returns is not approximately normal — it is bimodal, with many small returns during calm periods and occasional large rebounds post-crash. The Sharpe ratio, which assumes normality, is inflated by these rebounds. This is a known limitation: Sharpe is not a reliable risk measure for return distributions with fat tails and bimodal structure.
+At 60%+ momentum, price regularly crashes to near-zero and then recovers as the crash clears the market (all leveraged agents are liquidated, removing sell pressure). The recovery constitutes an extremely large positive return from a very low base. The distribution of returns is not approximately normal, it is bimodal, with many small returns during calm periods and occasional large rebounds post-crash. The Sharpe ratio, which assumes normality, is inflated by these rebounds. This is a known limitation: Sharpe is not a reliable risk measure for return distributions with fat tails and bimodal structure.
 
 ### 4.5 Margin Calls vs Defaults
 
@@ -211,13 +211,13 @@ Total margin calls is negatively correlated with momentum fraction ($\rho = -0.8
 
 ### 5.1 Confirmation of the Minsky Mechanism
 
-The central finding — that financial instability emerges endogenously from agent-level momentum trading without any exogenous crash mechanism — directly supports the FIH. The model adds a specific, testable claim to Minsky's narrative: the system undergoes a sharp phase transition at approximately 35–45% momentum trader dominance. Below this threshold, fundamental traders can absorb momentum-driven mispricings; above it, the feedback loop overpowers stabilising forces.
+The central finding: that financial instability emerges endogenously from agent-level momentum trading without any exogenous crash mechanism, directly supports the FIH. The model adds a specific, testable claim to Minsky's narrative: the system undergoes a sharp phase transition at approximately 35-45% momentum trader dominance. Below this threshold, fundamental traders can absorb momentum-driven mispricings; above it, the feedback loop overpowers stabilising forces.
 
-This is consistent with empirical work documenting that momentum strategies constituted roughly 30–50% of hedge fund strategies in the period leading up to the 2008 crisis (Brunnermeier & Nagel 2004; Khandani & Lo 2007).
+This is consistent with empirical work documenting that momentum strategies constituted roughly 30-50% of hedge fund strategies in the period leading up to the 2008 crisis (Brunnermeier & Nagel 2004; Khandani & Lo 2007).
 
 ### 5.2 The Stabilising Role of Fundamental Traders
 
-The 0%–30% stability zone is sustained entirely by fundamental traders counteracting momentum-driven mispricings. When price rises above fundamental value, fundamental traders sell, dampening the move. Their effectiveness depends on the ratio of their capital to the momentum traders' capital — at 40%+ momentum trader dominance, the fundamental traders (now fewer in number) lack the aggregate buying/selling power to stabilise the market.
+The 0%-30% stability zone is sustained entirely by fundamental traders counteracting momentum-driven mispricings. When price rises above fundamental value, fundamental traders sell, dampening the move. Their effectiveness depends on the ratio of their capital to the momentum traders' capital, at 40%+ momentum trader dominance, the fundamental traders (now fewer in number) lack the aggregate buying/selling power to stabilise the market.
 
 This reflects Shleifer & Vishny's (1997) "limits to arbitrage": arbitrageurs (fundamental traders) are finite in capital and can be overwhelmed by noise/trend traders.
 
@@ -236,13 +236,13 @@ This endogeneity is the key theoretical contribution of the FIH and is reproduce
 | No contagion / interbank linkages | Real crises spread through counterparty exposure | Future: balance sheet linkages between agents |
 | Momentum signal = rolling average return | Real momentum traders use more sophisticated signals (RSI, MACD, crossovers) | Captures the qualitative mechanism; exact signal form matters for calibration |
 | Sharpe anomaly at extreme fractions | Inflated Sharpe in high-momentum regimes is a measure artefact | Use Sortino or Calmar ratio for non-normal return distributions |
-| Ponzi fraction always zero | $L_{\max} = 3.0$ equals the Ponzi threshold — agents liquidated before entering Ponzi state | Lower Ponzi threshold (e.g. 2.5) or raise $L_{\max}$ to 4.0 |
+| Ponzi fraction always zero | $L_{\max} = 3.0$ equals the Ponzi threshold, agents liquidated before entering Ponzi state | Lower Ponzi threshold (e.g. 2.5) or raise $L_{\max}$ to 4.0 |
 
 ---
 
 ## 6. Next Steps
 
-**Phase 4 — Reinforcement Learning Environment**
+**Phase 4: Reinforcement Learning Environment**
 
 The RL agent will observe an 11-dimensional state vector:
 
@@ -258,7 +258,7 @@ and output a target leverage exposure from a discrete action space $\{-1.0,\ -0.
 
 The core research question: does a profit-maximising RL agent learn to exploit the leverage cycle (buy during calm, unwind before crash) in a way that amplifies or dampens systemic risk? Do risk-adjusted and system-aware rewards produce different emergent behaviour?
 
-**Phase 6 — Regulatory Interventions**
+**Phase 6: Regulatory Interventions**
 
 Test counterfactual policies:
 - Hard leverage caps ($L_{\max} \in \{1.5, 2.0, 2.5\}$)
@@ -272,26 +272,26 @@ Measure the trade-off between crash prevention and liquidity reduction.
 
 ## 7. Conclusion
 
-This simulation demonstrates that Minsky's Financial Instability Hypothesis is mechanistically credible: a market populated even partly by rational trend-following agents will endogenously generate leverage cycles and crashes without any external shock. The critical finding is a phase transition at approximately 35–45% momentum trader dominance — a quantitative, testable prediction that could guide empirical research and regulatory design.
+This simulation demonstrates that Minsky's Financial Instability Hypothesis is mechanistically credible: a market populated even partly by rational trend-following agents will endogenously generate leverage cycles and crashes without any external shock. The critical finding is a phase transition at approximately 35-45% momentum trader dominance, a quantitative, testable prediction that could guide empirical research and regulatory design.
 
-The model also highlights two important caveats for interpreting market data. First, the Gini coefficient confounds prosperous and catastrophic equality: high-crash regimes can show low inequality because everyone is equally ruined. Second, the Sharpe ratio is unreliable in markets with bimodal return distributions — precisely the conditions that Minsky's theory predicts will arise. Both points argue for a broader suite of systemic risk metrics when evaluating market health.
+The model also highlights two important caveats for interpreting market data. First, the Gini coefficient confounds prosperous and catastrophic equality: high-crash regimes can show low inequality because everyone is equally ruined. Second, the Sharpe ratio is unreliable in markets with bimodal return distributions, precisely the conditions that Minsky's theory predicts will arise. Both points argue for a broader suite of systemic risk metrics when evaluating market health.
 
 ---
 
 ## References
 
-Brunnermeier, M. K. & Nagel, S. (2004). Hedge funds and the technology bubble. *Journal of Finance*, 59(5), 2013–2040.
+Brunnermeier, M. K. & Nagel, S. (2004). Hedge funds and the technology bubble. *Journal of Finance*, 59(5), 2013-2040.
 
-Khandani, A. E. & Lo, A. W. (2007). What happened to the quants in August 2007? *Journal of Investment Management*, 5(4), 5–54.
+Khandani, A. E. & Lo, A. W. (2007). What happened to the quants in August 2007? *Journal of Investment Management*, 5(4), 5-54.
 
-Kyle, A. S. (1985). Continuous auctions and insider trading. *Econometrica*, 53(6), 1315–1335.
+Kyle, A. S. (1985). Continuous auctions and insider trading. *Econometrica*, 53(6), 1315-1335.
 
 Minsky, H. P. (1986). *Stabilizing an Unstable Economy*. Yale University Press.
 
 Minsky, H. P. (1992). The financial instability hypothesis. Levy Economics Institute Working Paper No. 74.
 
-Mnih, V. et al. (2015). Human-level control through deep reinforcement learning. *Nature*, 518, 529–533.
+Mnih, V. et al. (2015). Human-level control through deep reinforcement learning. *Nature*, 518, 529-533.
 
-Shleifer, A. & Vishny, R. (1997). The limits of arbitrage. *Journal of Finance*, 52(1), 35–55.
+Shleifer, A. & Vishny, R. (1997). The limits of arbitrage. *Journal of Finance*, 52(1), 35-55.
 
 Sutton, R. S. & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press.

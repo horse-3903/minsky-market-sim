@@ -25,9 +25,9 @@ A mathematical and conceptual reference for the Minsky Market Simulation.
 
 ### 1.1 Background
 
-Hyman Minsky (1919–1996) was an American economist whose work, largely ignored during his lifetime, became influential after the 2008 global financial crisis. His central claim, the **Financial Instability Hypothesis (FIH)**, inverts the standard equilibrium view of financial markets: rather than markets being self-correcting, **stability itself sows the seeds of instability**.
+Hyman Minsky (1919-1996) was an American economist whose work, largely ignored during his lifetime, became influential after the 2008 global financial crisis. His central claim, the **Financial Instability Hypothesis (FIH)**, inverts the standard equilibrium view of financial markets: rather than markets being self-correcting, **stability itself sows the seeds of instability**.
 
-The core insight is that during periods of calm, agents systematically underestimate risk and increase leverage. This collective shift in risk-taking transforms a stable system into a fragile one. When a shock eventually arrives — even a small one — the over-leveraged system is unable to absorb it, and cascading forced selling produces a crash far larger than the original shock.
+The core insight is that during periods of calm, agents systematically underestimate risk and increase leverage. This collective shift in risk-taking transforms a stable system into a fragile one. When a shock eventually arrives, even a small one, the over-leveraged system is unable to absorb it, and cascading forced selling produces a crash far larger than the original shock.
 
 ### 1.2 The Three Financing Regimes
 
@@ -63,7 +63,7 @@ L_hedge <= L < L_speculative   (default: 1.5 <= L < 3.0)
 
 **Ponzi finance**
 
-The borrower cannot even cover interest payments from cash flows. Solvency depends entirely on rising asset prices — the agent must sell assets at a gain or borrow further just to service existing debt.
+The borrower cannot even cover interest payments from cash flows. Solvency depends entirely on rising asset prices, the agent must sell assets at a gain or borrow further just to service existing debt.
 
 ```
 Cash flow < Interest
@@ -100,7 +100,7 @@ Low volatility
 
 ### 1.4 The Minsky Moment
 
-A **Minsky moment** is the point at which the system tips from fragility into crisis. A small negative shock — insufficient to cause a crisis in a low-leverage environment — triggers margin calls for Ponzi-financed agents. Forced selling drives prices down. Falling prices trigger margin calls for speculative agents. Further forced selling drives prices down further. The cascade continues until leverage across the system is dramatically reduced, often overshooting the fundamental value downward.
+A **Minsky moment** is the point at which the system tips from fragility into crisis. A small negative shock, insufficient to cause a crisis in a low-leverage environment, triggers margin calls for Ponzi-financed agents. Forced selling drives prices down. Falling prices trigger margin calls for speculative agents. Further forced selling drives prices down further. The cascade continues until leverage across the system is dramatically reduced, often overshooting the fundamental value downward.
 
 The key property: the crash is **disproportionate to the trigger**. A 2% price fall from a shock can produce a 30% crash through the forced deleveraging spiral.
 
@@ -124,7 +124,7 @@ These assumptions are mathematically convenient but empirically problematic. Rea
 - Asset price bubbles and crashes
 - Heterogeneous beliefs and strategies
 
-**Agent-based models (ABMs)** replace the representative rational agent with a population of heterogeneous, adaptive agents. Each agent follows a simple local rule. Macro-level phenomena — bubbles, crashes, volatility clustering — **emerge** from micro-level interactions rather than being imposed by assumption.
+**Agent-based models (ABMs)** replace the representative rational agent with a population of heterogeneous, adaptive agents. Each agent follows a simple local rule. Macro-level phenomena: bubbles, crashes, volatility clustering, **emerge** from micro-level interactions rather than being imposed by assumption.
 
 ### 2.2 Emergence
 
@@ -159,11 +159,11 @@ $$
 
 where:
 
-- $\mu_F$ is the drift (set to 0 in baseline experiments — no secular trend)
+- $\mu_F$ is the drift (set to 0 in baseline experiments, no secular trend)
 - $\sigma_F$ is the fundamental volatility (kept small, e.g. 0.003 per step)
 - $\varepsilon_t$ are i.i.d. Gaussian shocks
 
-This is the log-normal process familiar from the Black-Scholes model. The key design choice is keeping $\sigma_F$ small so that large price movements cannot be explained by fundamental shocks alone — any crash must be endogenously generated.
+This is the log-normal process familiar from the Black-Scholes model. The key design choice is keeping $\sigma_F$ small so that large price movements cannot be explained by fundamental shocks alone, any crash must be endogenously generated.
 
 **Why geometric rather than arithmetic?** Geometric Brownian motion ensures $F_t > 0$ for all $t$ (prices cannot go negative) and produces percentage returns that are i.i.d., consistent with the efficient market hypothesis for fundamental value.
 
@@ -223,7 +223,7 @@ $$
 \text{impact} = \frac{\alpha}{\lambda}
 $$
 
-Lower liquidity ($\lambda \to 0$) produces larger price swings for the same demand imbalance — a key feature for modelling crisis dynamics where liquidity evaporates.
+Lower liquidity ($\lambda \to 0$) produces larger price swings for the same demand imbalance, a key feature for modelling crisis dynamics where liquidity evaporates.
 
 ### 4.3 Forced-Sell Feedback
 
@@ -237,7 +237,7 @@ This one-step delay is intentional. It:
 
 1. Prevents simultaneous price update and liquidation (avoids logical circularity)
 2. Models the realistic lag between a broker issuing a margin call and the resulting market order being executed
-3. Allows the price decline from forced selling to propagate and trigger further margin calls in subsequent steps — the mechanism behind the Minsky cascade
+3. Allows the price decline from forced selling to propagate and trigger further margin calls in subsequent steps, the mechanism behind the Minsky cascade
 
 ---
 
@@ -254,19 +254,19 @@ Each agent $i$ holds a complete balance sheet at every time step $t$:
 
 ### 5.1 Derived Quantities
 
-**Asset exposure** — the gross value of the risky asset position:
+**Asset exposure**: the gross value of the risky asset position:
 
 $$
 E_{i,t} = P_t \cdot q_{i,t}
 $$
 
-**Wealth (equity)** — the net asset value, or what the agent would have after paying all debts:
+**Wealth (equity)**: the net asset value, or what the agent would have after paying all debts:
 
 $$
 W_{i,t} = c_{i,t} + P_t q_{i,t} - d_{i,t}
 $$
 
-**Leverage** — the ratio of gross asset exposure to equity:
+**Leverage**: the ratio of gross asset exposure to equity:
 
 $$
 L_{i,t} = \frac{|E_{i,t}|}{\max(W_{i,t},\, \varepsilon)}
@@ -314,7 +314,7 @@ $$
 q_{i,t+1} = q_{i,t} - \Delta q
 $$
 
-Note that selling shares does not increase wealth directly — proceeds go to debt repayment first. This is a key constraint: when prices fall, leveraged agents cannot easily restore their balance sheet by selling, because the proceeds are absorbed by debt.
+Note that selling shares does not increase wealth directly, proceeds go to debt repayment first. This is a key constraint: when prices fall, leveraged agents cannot easily restore their balance sheet by selling, because the proceeds are absorbed by debt.
 
 ---
 
@@ -334,7 +334,7 @@ $$
 r_b^{\text{annual}} \approx (1 + r_b)^{500} - 1
 $$
 
-For $r_b = 0.0003$, this gives approximately 16% per year — a high but not unrealistic unsecured borrowing rate that penalises prolonged heavy leverage.
+For $r_b = 0.0003$, this gives approximately 16% per year, a high but not unrealistic unsecured borrowing rate that penalises prolonged heavy leverage.
 
 Interest accrual is the mechanism by which **time harms leveraged positions**. Even if prices stay flat, debt grows. An agent who borrows heavily and holds a stagnant position will see wealth slowly eroded by interest, eventually triggering a margin call even without any price movement.
 
@@ -368,7 +368,7 @@ $$
 W \leftarrow c + P(q - \Delta q) - (d - P \Delta q) = c + Pq - d = W
 $$
 
-This is a crucial insight: **selling to reduce leverage does not directly increase wealth** — it just reduces the size of both sides of the balance sheet. Wealth only recovers if prices subsequently rise.
+This is a crucial insight: **selling to reduce leverage does not directly increase wealth**, it just reduces the size of both sides of the balance sheet. Wealth only recovers if prices subsequently rise.
 
 In practice, a minimum liquidation fraction $\phi$ is also enforced so that each margin call makes meaningful progress:
 
@@ -398,7 +398,7 @@ $$
 \Delta L_i \approx \frac{q_i}{W_i} \Delta P - \frac{P q_i}{W_i^2} \cdot q_i \Delta P = \frac{q_i \Delta P}{W_i} \left(1 - L_i\right)
 $$
 
-For $L_i > 1$ (leveraged), this is negative times a negative — leverage **increases** when prices fall. This is the mathematical core of the Minsky instability mechanism.
+For $L_i > 1$ (leveraged), this is negative times a negative, leverage **increases** when prices fall. This is the mathematical core of the Minsky instability mechanism.
 
 ---
 
@@ -455,7 +455,7 @@ The noise trader has no systematic belief. Each step, they draw an action unifor
 Noise traders serve two roles:
 
 1. **Prevent trivial equilibrium**: without noise, a market of equal fundamental and momentum traders might simply sit at the equilibrium price indefinitely
-2. **Realistic market activity**: real markets have many participants whose trades are not fully explained by any systematic strategy — execution flows, index rebalancing, liquidity needs
+2. **Realistic market activity**: real markets have many participants whose trades are not fully explained by any systematic strategy, execution flows, index rebalancing, liquidity needs
 
 ### 7.4 Market Maker
 
@@ -469,13 +469,13 @@ The market maker acts as a liquidity provider, leaning against price deviations 
 
 The RL agent's interaction with the market is formalised as a **Markov Decision Process (MDP)** $(\mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma)$:
 
-- $\mathcal{S}$: state space — a vector of market and agent observables
-- $\mathcal{A}$: action space — discrete set of target exposure levels
+- $\mathcal{S}$: state space, a vector of market and agent observables
+- $\mathcal{A}$: action space, discrete set of target exposure levels
 - $\mathcal{T}: \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$: stochastic transition function (governed by the simulation)
 - $\mathcal{R}: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$: reward function
 - $\gamma \in [0,1)$: discount factor
 
-The Markov property requires that the transition distribution depends only on the current state, not the full history. This is approximate in the simulation — the true state includes the positions of all other agents — but the observation vector is designed to capture the most relevant market statistics.
+The Markov property requires that the transition distribution depends only on the current state, not the full history. This is approximate in the simulation, the true state includes the positions of all other agents, but the observation vector is designed to capture the most relevant market statistics.
 
 ### 8.2 State (Observation) Space
 
@@ -533,7 +533,7 @@ $$
 R_t^{\text{profit}} = \frac{W_{i,t+1} - W_{i,t}}{W_{i,t}}
 $$
 
-This is the standard financial objective. The hypothesis is that an agent trained purely on this signal will learn to increase leverage during calm periods — rational at the individual level, destabilising at the system level.
+This is the standard financial objective. The hypothesis is that an agent trained purely on this signal will learn to increase leverage during calm periods, rational at the individual level, destabilising at the system level.
 
 **Risk-adjusted reward**
 
@@ -554,7 +554,7 @@ $$
 R_t^{\text{sys}} = \Delta W_t - \lambda \cdot \text{DD}_t - \mu \cdot L_{i,t} - \gamma \cdot \bar{L}_t
 $$
 
-The additional $\gamma \cdot \bar{L}_t$ term penalises the agent when aggregate market leverage is high, regardless of their own leverage. This tests whether an agent can be incentivised to internalise **systemic risk** — the negative externality their leverage imposes on the system.
+The additional $\gamma \cdot \bar{L}_t$ term penalises the agent when aggregate market leverage is high, regardless of their own leverage. This tests whether an agent can be incentivised to internalise **systemic risk**, the negative externality their leverage imposes on the system.
 
 ### 8.5 Q-Learning
 
@@ -668,7 +668,7 @@ $$
 \text{SR}_i = \frac{\bar{r}_i}{\sigma_{r_i}} \cdot \sqrt{N_{\text{steps per year}}}
 $$
 
-where $\bar{r}_i$ and $\sigma_{r_i}$ are the mean and standard deviation of the agent's per-step wealth returns. The Sharpe ratio penalises strategies that achieve high returns only by accepting high volatility — exactly what profit-only RL agents tend to do.
+where $\bar{r}_i$ and $\sigma_{r_i}$ are the mean and standard deviation of the agent's per-step wealth returns. The Sharpe ratio penalises strategies that achieve high returns only by accepting high volatility, exactly what profit-only RL agents tend to do.
 
 ### 9.6 Gini Coefficient
 
@@ -686,14 +686,14 @@ $G = 0$ is perfect equality; $G = 1$ is maximum inequality (one agent holds all 
 
 Putting all the pieces together, here is the full sequence of events in a simulated Minsky cycle:
 
-**Phase 1 — Stable equilibrium** (steps 0–~100)
+**Phase 1: Stable equilibrium** (steps 0-~100)
 
 - $P_t \approx F_t$, $M_t \approx 0$
 - All agents in hedge-finance regime ($L < 1.5$)
 - Low rolling volatility
 - RL agent begins exploration, learning that leveraged positions in the current environment earn positive returns
 
-**Phase 2 — Leverage build-up** (steps ~100–~300)
+**Phase 2: Leverage build-up** (steps ~100-~300)
 
 - RL agent (and momentum traders) increase positions
 - Leveraged buying pushes $P_t > F_t$
@@ -703,14 +703,14 @@ Putting all the pieces together, here is the full sequence of events in a simula
 - Aggregate leverage $\bar{L}_t$ increases
 - Fundamental traders sell into the rising market, but are outnumbered
 
-**Phase 3 — Fragility** (steps ~300–~350)
+**Phase 3: Fragility** (steps ~300-~350)
 
 - Price significantly above fundamental value ($M_t > \theta_b$, bubble flag)
 - High proportion of agents in speculative or Ponzi regimes
 - System is fragile: margin calls would cascade from even a small price fall
 - RL agent (if trained on profit-only reward) is at maximum leverage
 
-**Phase 4 — Shock and cascade** (steps ~350)
+**Phase 4: Shock and cascade** (steps ~350)
 
 - Small negative shock ($\eta_t$ slightly negative, or fundamental value dip)
 - First margin calls fire on Ponzi agents
@@ -719,7 +719,7 @@ Putting all the pieces together, here is the full sequence of events in a simula
 - Forced-sell spiral causes a large price decline disproportionate to the initial shock
 - RL agent's wealth collapses
 
-**Phase 5 — Post-crash deleveraging** (steps ~350–~500)
+**Phase 5: Post-crash deleveraging** (steps ~350-~500)
 
 - Surviving agents hold mostly cash (low leverage)
 - Price undershoots fundamental value ($M_t < 0$)
@@ -742,7 +742,7 @@ This simulation is a **stylised computational experiment**, not a calibrated mod
 | Homogeneous borrowing rate | In reality, spreads widen as leverage increases and credit quality deteriorates |
 | Hard leverage cap | Real margin requirements are dynamic and endogenous to market conditions |
 | No short-selling | Agents cannot profit from declining prices (this limits some stabilising forces) |
-| Simplified RL state | The true state includes all other agents' positions — partially observed MDP |
+| Simplified RL state | The true state includes all other agents' positions, partially observed MDP |
 | i.i.d. shocks | Real macro shocks are correlated, regime-dependent, and have fat tails |
 
 These limitations do not invalidate the simulation's findings, but they do restrict the generalisability of its conclusions. A finding that "profit-only RL agents increase leverage and contribute to crashes" in this model is evidence of a possible mechanism, not proof that RL trading systems cause financial instability in practice.
@@ -758,16 +758,16 @@ These limitations do not invalidate the simulation's findings, but they do restr
 
 **Agent-Based Models in Finance**
 - LeBaron, B. (2006). "Agent-based Computational Finance." *Handbook of Computational Economics*, Vol. 2.
-- Farmer, J.D. & Foley, D. (2009). "The economy needs agent-based modelling." *Nature*, 460, 685–686.
+- Farmer, J.D. & Foley, D. (2009). "The economy needs agent-based modelling." *Nature*, 460, 685-686.
 - Tesfatsion, L. & Judd, K.L. (eds.) (2006). *Handbook of Computational Economics*. North-Holland.
 
 **Price Impact and Market Microstructure**
-- Kyle, A.S. (1985). "Continuous auctions and insider trading." *Econometrica*, 53(6), 1315–1335.
-- Geanakoplos, J. (2010). "The Leverage Cycle." *NBER Macroeconomics Annual*, 24, 1–65.
+- Kyle, A.S. (1985). "Continuous auctions and insider trading." *Econometrica*, 53(6), 1315-1335.
+- Geanakoplos, J. (2010). "The Leverage Cycle." *NBER Macroeconomics Annual*, 24, 1-65.
 
 **Reinforcement Learning**
 - Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press.
-- Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518, 529–533.
+- Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518, 529-533.
 
 **RL in Finance**
 - Deng, Y. et al. (2016). "Deep Direct Reinforcement Learning for Financial Signal Representation and Trading." *IEEE Transactions on Neural Networks and Learning Systems*.

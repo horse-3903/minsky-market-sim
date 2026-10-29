@@ -2,7 +2,7 @@
 
 # minsky-market-sim
 
-Agent-based reinforcement learning simulation of Minsky's Financial Instability Hypothesis — testing whether profit-maximising agents can endogenously generate financial fragility from a stable market equilibrium.
+Agent-based reinforcement learning simulation of Minsky's Financial Instability Hypothesis, testing whether profit-maximising agents can endogenously generate financial fragility from a stable market equilibrium.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white)](https://numpy.org)
@@ -21,23 +21,23 @@ Agent-based reinforcement learning simulation of Minsky's Financial Instability 
 
 ## Overview
 
-**minsky-market-sim** is a discrete-time agent-based market simulation that investigates whether individually rational, profit-seeking behaviour can endogenously generate the leverage buildup and cascading deleveraging described in Minsky's Financial Instability Hypothesis. The market begins in a controlled stable equilibrium — price at fundamental value, low volatility, no defaults — and evolves entirely through agent interactions.
+**minsky-market-sim** is a discrete-time agent-based market simulation that investigates whether individually rational, profit-seeking behaviour can endogenously generate the leverage buildup and cascading deleveraging described in Minsky's Financial Instability Hypothesis. The market begins in a controlled stable equilibrium, price at fundamental value, low volatility, no defaults, and evolves entirely through agent interactions.
 
-The core research question: can reinforcement learning agents, optimising for profit, learn to increase leverage during calm periods in a way that creates systemic fragility? Can a small exogenous shock then trigger margin calls, forced liquidation, and a crash — without the crash being built into the model?
+The core research question: can reinforcement learning agents, optimising for profit, learn to increase leverage during calm periods in a way that creates systemic fragility? Can a small exogenous shock then trigger margin calls, forced liquidation, and a crash, without the crash being built into the model?
 
 ---
 
 ## Features
 
-- **Endogenous instability** — market starts stable by design; fragility emerges from agent behaviour, not from external shocks
-- **Full agent balance sheets** — each agent tracks cash, shares, debt, wealth, and leverage; interest accrues per step
-- **Margin calls and forced liquidation** — agents breaching `L_max` are automatically deleveraged; forced sells feed back into next-step price pressure
-- **Minsky finance-state classification** — agents classified as hedge, speculative, or Ponzi at every step based on leverage thresholds
-- **Four rule-based agent types** — fundamental (stabilising), momentum (destabilising), noise (random), market maker (optional liquidity)
-- **RL agent scaffolding** — `RLAgent` stub ready for Phase 4 Gymnasium environment and DQN/PPO implementation
-- **Interactive Streamlit dashboard** — 5-tab UI with Plotly charts, live parameter controls, and CSV/JSON data export
-- **Reproducible experiments** — every run is seeded; results saved as timestamped CSV and summary JSON
-- **30 unit tests** — covering price mechanics, balance-sheet accounting, margin call logic, and metrics calculations
+- **Endogenous instability**: market starts stable by design; fragility emerges from agent behaviour, not from external shocks
+- **Full agent balance sheets**: each agent tracks cash, shares, debt, wealth, and leverage; interest accrues per step
+- **Margin calls and forced liquidation**, agents breaching `L_max` are automatically deleveraged; forced sells feed back into next-step price pressure
+- **Minsky finance-state classification**: agents classified as hedge, speculative, or Ponzi at every step based on leverage thresholds
+- **Four rule-based agent types**: fundamental (stabilising), momentum (destabilising), noise (random), market maker (optional liquidity)
+- **RL agent scaffolding**: `RLAgent` stub ready for Phase 4 Gymnasium environment and DQN/PPO implementation
+- **Interactive Streamlit dashboard**: 5-tab UI with Plotly charts, live parameter controls, and CSV/JSON data export
+- **Reproducible experiments**: every run is seeded; results saved as timestamped CSV and summary JSON
+- **30 unit tests**: covering price mechanics, balance-sheet accounting, margin call logic, and metrics calculations
 
 ---
 
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 python main.py --experiment baseline --seed 42
 ```
 
-Results are written to `results/baseline/` — a time-series CSV, a summary JSON, and eight matplotlib plots.
+Results are written to `results/baseline/`: a time-series CSV, a summary JSON, and eight matplotlib plots.
 
 ### Launch the dashboard
 
@@ -132,7 +132,7 @@ minsky-market-sim/
 │   ├── vary_momentum_share.py # Experiment 2 — momentum trader sweep (Phase 3)
 │   ├── train_profit_rl.py     # Experiment 3 — profit-only RL (Phase 4)
 │   ├── compare_rewards.py     # Experiment 4 — reward function comparison (Phase 5)
-│   └── regulation_tests.py    # Experiment 5 — leverage caps, circuit breakers (Phase 6)
+│   └── regulation_tests.py    # Experiment 5, leverage caps, circuit breakers (Phase 6)
 │
 ├── analysis/                  # post-run analysis
 │   ├── plots.py               # matplotlib plot suite
@@ -156,14 +156,14 @@ minsky-market-sim/
 
 | Phase | Scope | Status |
 |-------|-------|--------|
-| **1 — Market simulator** | Asset, price mechanism, rule-based agents, metrics, matplotlib plots | ✅ Complete |
-| **2 — Leverage & margin calls** | Debt interest, forced liquidation, defaults, Minsky classification | ✅ Complete |
-| **2.5 — Dashboard** | Streamlit + Plotly interactive UI, 5 tabs, live parameter controls | ✅ Complete |
-| **3 — Rule-based experiments** | Vary momentum trader share; baseline stability validation | 🔲 Next |
-| **4 — RL environment** | Gymnasium `MinskyMarketEnv`, tabular Q-learning, DQN | 🔲 Planned |
-| **5 — Reward comparison** | Profit-only vs risk-adjusted vs system-aware reward functions | 🔲 Planned |
-| **6 — Regulation experiments** | Leverage caps, margin requirements, transaction tax, circuit breakers | 🔲 Planned |
-| **7 — Report & dashboard polish** | Final visualisations, Streamlit demo, written report | 🔲 Planned |
+| **1: Market simulator** | Asset, price mechanism, rule-based agents, metrics, matplotlib plots | Complete |
+| **2: Leverage & margin calls** | Debt interest, forced liquidation, defaults, Minsky classification | Complete |
+| **2.5: Dashboard** | Streamlit + Plotly interactive UI, 5 tabs, live parameter controls | Complete |
+| **3: Rule-based experiments** | Vary momentum trader share; baseline stability validation | Next |
+| **4: RL environment** | Gymnasium `MinskyMarketEnv`, tabular Q-learning, DQN | Planned |
+| **5: Reward comparison** | Profit-only vs risk-adjusted vs system-aware reward functions | Planned |
+| **6: Regulation experiments** | Leverage caps, margin requirements, transaction tax, circuit breakers | Planned |
+| **7: Report & dashboard polish** | Final visualisations, Streamlit demo, written report | Planned |
 
 ---
 
@@ -173,7 +173,7 @@ minsky-market-sim/
 2. Does leveraged buying create asset-price bubbles relative to fundamental value?
 3. Can a small shock trigger margin calls and forced liquidation cascades?
 4. Do risk-sensitive reward functions reduce financial instability relative to profit-only rewards?
-5. Which regulatory interventions — leverage caps, margin requirements, transaction taxes, circuit breakers — most effectively reduce crash frequency without excessive liquidity loss?
+5. Which regulatory interventions: leverage caps, margin requirements, transaction taxes, circuit breakers, most effectively reduce crash frequency without excessive liquidity loss?
 
 ---
 
